@@ -48,7 +48,7 @@ def handle_create( a: Create, res: dict, client_ids: dict, server_ids: dict ):
 
 
 def handle_update(a: Update, res: dict, client_ids, server_ids):
-    asdf: ShoppingItem = copy.copy(a.after)
+    asdf: ShoppingItem = copy.copy(a.get_item())
     if a.get_origin() == 'server':
         asdf.id = server_ids[a.get_id()]
     else:

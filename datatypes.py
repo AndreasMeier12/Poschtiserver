@@ -29,26 +29,27 @@ class Command(ABC):
 
     def get_id(self):
         pass
+    def get_item(self):
+        pass
 
 
 class Update(Command):
-    def __init__(self, before: ShoppingItem, after: ShoppingItem, timestamp: datetime, origin: str):
-        self.before : ShoppingItem = before
-        self.after: ShoppingItem = after
+    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str):
+        self.item: ShoppingItem = item
         self.timestamp: datetime = timestamp
         self.origin = origin
 
-    def get_before(self) -> ShoppingItem:
-        return self.before
-
-    def get_after(self) -> ShoppingItem:
-        return self.before
+    def get_item(self) -> ShoppingItem:
+        return self.item
 
     def get_origin(self):
         return self.origin
 
     def get_id(self):
-        return self.before.id
+        return self.item.id
+
+    def get_timestamp(self):
+        return self.timestamp
 
 class Create(Command):
     def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str):
