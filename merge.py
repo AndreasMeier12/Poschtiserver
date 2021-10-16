@@ -11,7 +11,7 @@ def merge(client, server):
     res = {}
     for command in commands:
         handle(command, res, client_ids, server_ids)
-    return res
+    return sorted([x for x in res.values()], key=lambda x: x.id)
 
 
 
