@@ -27,7 +27,16 @@ class TestMerging(unittest.TestCase):
         print(res)
 
     def test_create_interleaved(self):
-        pass
+        item_a = ShoppingItem("a", "", "", 1, 1)
+        item_b = ShoppingItem("b", "", "", 1, 1)
+        item_c = ShoppingItem("c", "", "", 2, 1)
+        command_a = Create(item_a, datetime.now() - timedelta(days=1), "server")
+        command_b = Create(item_b, datetime.now() - timedelta(days=0.2), "client")
+        command_c = Create(item_c, datetime.now() - timedelta(days=0.1), "server")
+        res = merge.merge([command_a, command_c], [command_b])
+        print(res)
+
+
     def test_delete(self):
         pass
     def test_update(self):

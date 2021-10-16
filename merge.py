@@ -20,9 +20,9 @@ def find_max_id(client_ids: dict, server_ids: dict):
         return 0
 
     if len(server_ids)  == 0:
-        return max(client_ids.keys())
+        return max(client_ids.values())
     if len(client_ids) == 0:
-        return max(server_ids.keys())
+        return max(server_ids.values())
 
     return max( max( client_ids.values() ), max(server_ids.values()))
 
@@ -41,7 +41,7 @@ def handle_create( a: Create, res: dict, client_ids: dict, server_ids: dict ):
     if a.get_origin() == 'server':
         server_ids[a.get_id()] = cur_id
     if a.get_origin() == 'client':
-        server_ids[a.get_id()] = cur_id
+        client_ids[a.get_id()] = cur_id
     asdf = copy.copy(a.get_item())
     asdf.id = cur_id
     res[cur_id] = asdf
