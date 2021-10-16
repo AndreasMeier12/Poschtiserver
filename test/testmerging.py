@@ -67,3 +67,12 @@ class TestMerging(unittest.TestCase):
         self.assertEqual(res[0].name, "d")
 
         pass
+
+    def test_update_client(self):
+        server, client = self.create_three_item_merge()
+        item_a = ShoppingItem("d", "", "", 1, 1)
+        update_command = Update(item_a, datetime.now(), 'client')
+        client.append(update_command)
+        res = merge.merge(client, server)
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[1].name, "d")
