@@ -9,6 +9,9 @@ class TestMerging(unittest.TestCase):
         item = ShoppingItem("a", "", "", 1, 1)
         command = Create(item, datetime.now(), "server")
         res = merge.merge([command], [])
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].id==1, 1)
+
         print(res)
 
 
@@ -16,7 +19,8 @@ class TestMerging(unittest.TestCase):
         item = ShoppingItem("a", "", "", 1, 1)
         command = Create(item, datetime.now(), "client")
         res = merge.merge([], [command])
-        print(res)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].id, 1)
 
     def test_create_simple_both(self):
         item_a = ShoppingItem("a", "", "", 1, 1)
@@ -24,7 +28,9 @@ class TestMerging(unittest.TestCase):
         command_s = Create(item_a, datetime.now() - timedelta(days=1), "server")
         command_c = Create(item_b, datetime.now(), "client")
         res = merge.merge([command_s], [command_c])
-        print(res)
+        self.assertEqual(len(res), 2)
+        self.assertEqual(res[0].name, "a")
+        self.assertEqual(res[1].name, "b")
 
     def test_create_interleaved(self):
         item_a = ShoppingItem("a", "", "", 1, 1)
@@ -34,8 +40,10 @@ class TestMerging(unittest.TestCase):
         command_b = Create(item_b, datetime.now() - timedelta(days=0.2), "client")
         command_c = Create(item_c, datetime.now() - timedelta(days=0.1), "server")
         res = merge.merge([command_a, command_c], [command_b])
-        print(res)
-
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[0].name, "a")
+        self.assertEqual(res[1].name, "b")
+        self.assertEqual(res[2].name, "c")
 
     def test_delete(self):
         pass
