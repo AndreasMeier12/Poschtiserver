@@ -22,9 +22,6 @@ class TestMerging(unittest.TestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].id==1, 1)
 
-        print(res)
-
-
     def test_create_simple_client(self):
         item = ShoppingItem("a", "", "", 1, 1)
         command = Create(item, datetime.now(), "client")
