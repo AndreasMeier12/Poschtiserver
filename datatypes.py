@@ -15,7 +15,14 @@ class ShoppingItem:
     id: int
     list_id: int
 
-
+def get_command(id: int, list_id: int, name: str, shop: str, quantity: str, timestamp: datetime, type: 'str', origin: str):
+    item : ShoppingItem = ShoppingItem(name, quantity, shop, id, list_id)
+    if type == 'update':
+        return Update(item, timestamp, origin)
+    if type == 'create':
+        return Create(item, timestamp, origin)
+    if type == 'delete':
+        return Delete(item, timestamp, origin)
 
 class Command(ABC):
     def get_timestamp(self):
