@@ -47,6 +47,17 @@ function create(){
     addToList(newItem)
 }
 
+function clearForm(){
+    document.getElementById("inputname").value = ""
+    document.getElementById("inputquantity").value = ""
+    document.getElementById("inputshop").value = ""
+}
+
+function handleItemSubmit(){
+    create()
+    clearForm()
+
+}
 
 function addToList(a: ShopItem){
     const table = <HTMLTableElement>document.getElementById("listtable");
