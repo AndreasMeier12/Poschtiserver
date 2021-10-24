@@ -24,7 +24,9 @@ class ShopItem {
 }
 
 function checkDone(a: number){
-    console.log("check done");
+   return function asdf (e: number){
+       console.log( `Item ${a} checked`)
+   }
 }
 
 function getMaxId() : number{
@@ -60,6 +62,7 @@ function addToList(a: ShopItem){
     const btn = document.createElement('input');
     btn.type = 'button';
     btn.value = "✅";
+    btn.addEventListener("click", checkDone(a.id))
     row.insertCell(3).appendChild(btn)
     const deleteButton = document.createElement('input');
     deleteButton.type = "button";
