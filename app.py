@@ -1,11 +1,13 @@
-from flask import Flask
+from flask import Flask, render_template
+from . import db
+from . import create_app
 
-app = Flask(__name__)
+app = create_app()
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def main():
+    return render_template('main.html')
 
 
 if __name__ == '__main__':
