@@ -11,6 +11,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 
+
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
@@ -59,7 +60,7 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            return redirect('/')
 
         flash(error)
 
@@ -81,7 +82,8 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect('/')
+
 
 def login_required(view):
     @functools.wraps(view)
@@ -92,3 +94,14 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+@bp.route('/lists')
+@login_required
+def show_lists():
+    return render_template('lists.html')
+
+@bp.route('/list')
+@login_required
+def show_single_lists():
+    return render_template('lists.html')
+
