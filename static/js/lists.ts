@@ -1,7 +1,12 @@
 let model: ShoppingList[] = []
-const DELETE = 'delete';
-const CREATE = 'create';
+
 const ORIGIN = 'server';
+
+enum CommandType {
+    DELETE = 'delete',
+    CREATE = 'create',
+
+}
 
 class ShoppingList {
     id: number;
@@ -10,6 +15,20 @@ class ShoppingList {
     constructor(id: number, name: string) {
         this.id = id;
         this.name = name;
+    }
+
+
+}
+
+class ListCommand {
+    list: ShoppingList
+    type: CommandType
+    origin: string
+
+    constructor(list: ShoppingList, type: CommandType) {
+        this.list = list;
+        this.type = type;
+        origin = ORIGIN;
     }
 
 
@@ -52,10 +71,11 @@ function redraw() {
 
 
 }
-function handleDelete(a: number){
-   return function asdf (){
-       console.log( `List ${a} delete`)
-   }
+
+function handleDelete(a: number) {
+    return function asdf() {
+        console.log(`List ${a} delete`)
+    }
 }
 
 
@@ -74,12 +94,23 @@ function setUp() {
     redraw();
 }
 
+
+function send_list(a: ShoppingList) {
+    console.log("send list")
+    const command = new ListCommand(a, CommandType.CREATE)
+    const body = JSON.stringify(command)
+    fetch('/auth/lists/api', {method: 'POST', body: body})
+
+}
+
 function handleListSubmit() {
     const element = (<HTMLInputElement>document.getElementById("inputname"));
     const name: string = element.value;
     element.value = ""
     const id = getMaxId() + 1;
-    model.push(new ShoppingList(id, name))
+    const list = new ShoppingList(id, name);
+    model.push(list)
+    send_list(list)
 
 
 }

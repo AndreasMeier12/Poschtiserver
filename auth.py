@@ -105,3 +105,14 @@ def show_lists():
 def show_single_lists():
     return render_template('list.html')
 
+@bp.route('/lists/api', methods=['GET'])
+@login_required
+def get_lists():
+    user = session.get('user_id')
+    db = get_db().execute()
+
+@bp.route('/lists/api', methods=['POST'])
+@login_required
+def handle_list_update():
+    user = session.get('user_id')
+    db = get_db().execute()
