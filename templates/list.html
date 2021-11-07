@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ list }}</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block header %}
 <script src="../static/js/list.js"></script>
+{% endblock %}
+{% block content %}
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
 .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
@@ -37,6 +34,4 @@
   <input type="button" value="+" onclick="handleItemSubmit()">
 
 </form>
-
-</body>
-</html>
+{% endblock %}
