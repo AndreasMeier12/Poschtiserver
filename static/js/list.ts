@@ -24,7 +24,7 @@ class ShopItem {
 }
 
 function checkDone(a: number){
-   return function asdf (e: number){
+   return function asdf (){
        console.log( `Item ${a} checked`)
    }
 }
@@ -38,9 +38,9 @@ return  model.map(x => x.id).reduce(function(a, b) {
 
 function create(){
     const itemId : number = getMaxId() + 1
-    const name : string = document.getElementById("inputname").value
-    const quantity = document.getElementById("inputquantity").value
-    const shop = document.getElementById("inputshop").value
+    const name : string = (<HTMLInputElement>document.getElementById("inputname")).value
+    const quantity = (<HTMLInputElement>document.getElementById("inputquantity")).value
+    const shop = (<HTMLInputElement>document.getElementById("inputshop")).value
     const done = false
     const newItem = new ShopItem(itemId, LISTID, name, shop, quantity, done)
     model.push(newItem)
@@ -48,9 +48,9 @@ function create(){
 }
 
 function clearForm(){
-    document.getElementById("inputname").value = ""
-    document.getElementById("inputquantity").value = ""
-    document.getElementById("inputshop").value = ""
+    (<HTMLInputElement>document.getElementById("inputname")).value = "";
+    (<HTMLInputElement>document.getElementById("inputquantity")).value = "";
+    (<HTMLInputElement>document.getElementById("inputshop")).value = ""
 }
 
 function handleItemSubmit(){

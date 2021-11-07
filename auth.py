@@ -103,5 +103,5 @@ def show_lists():
 @bp.route('/list')
 @login_required
 def show_single_lists():
-    return render_template('lists.html')
+    return render_template('list.html')
 
