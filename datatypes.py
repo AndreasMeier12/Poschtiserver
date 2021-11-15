@@ -95,5 +95,14 @@ class Delete(Command):
         return self.item.id
 
 @dataclass()
-class ShoppingList():
-    pass
+class ShoppingList:
+    id: int
+    name: str
+
+@dataclass
+class ListCommand():
+    origin: str
+    type: str
+    item: ShoppingList
+    timestamp: datetime
+
