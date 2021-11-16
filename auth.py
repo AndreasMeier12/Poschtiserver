@@ -1,4 +1,5 @@
 import functools
+import json
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -115,4 +116,7 @@ def get_lists():
 @login_required
 def handle_list_update():
     user = session.get('user_id')
+    a = json.loads(request.data)
+
+
     db = get_db().execute()

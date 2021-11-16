@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 
 def create_app(test_config=None):
@@ -10,6 +11,9 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/andreas/Documents/instance/flaskr.sqlite'
+
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -28,8 +32,7 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
-
-    from . import db
+    db = SQLAlchemy()
     db.init_app(app)
 
 

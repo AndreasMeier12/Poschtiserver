@@ -3,8 +3,11 @@ import sqlite3
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
-
-
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Table, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+engine = create_engine('sqlite:////home/andreas/Documents/instance/flaskr.sqlite')
+Base = declarative_base()
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
@@ -39,4 +42,3 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
-

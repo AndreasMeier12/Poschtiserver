@@ -25,11 +25,13 @@ CREATE TABLE command (
 );
 
 CREATE TABLE listcommand(
-    command_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    command_id INTEGER,
+    user_id INTEGER
     name TEXT NOT NULL,
-    type TEXT NOT NULL ,
+    type TEXT NOT NULL,
     list_id NOT NULL,
-    origin TEXT NOT NULL
+    origin TEXT NOT NULL,
+    PRIMARY KEY (command_id, user_id)
 );
 
 CREATE TABLE list(
