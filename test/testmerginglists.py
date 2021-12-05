@@ -1,6 +1,6 @@
 import unittest
-from merge import merge_lists
-from datatypes import ListCommand, ShoppingList
+from app.business.merge import merge_lists
+from app.business.datatypes import ListCommand, ShoppingList
 from datetime import datetime, timedelta
 
 class MyTestCase(unittest.TestCase):

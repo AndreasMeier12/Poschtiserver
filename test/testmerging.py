@@ -1,6 +1,6 @@
 import unittest
-import merge
-from datatypes import ShoppingItem, Command, Delete, Update, Create
+from app.business import merge
+from app.business.datatypes import ShoppingItem, Delete, Update, Create
 from datetime import datetime, timedelta
 
 
