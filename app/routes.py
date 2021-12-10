@@ -1,19 +1,19 @@
-import functools
 import json
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
+from flask_login import login_required
 from werkzeug.security import check_password_hash
 
+from app import app
 from app.models import User
 
-from app import app
 
-
+@app.route('/index')
 @app.route('/')
-def main():
-    return render_template('../static/html/base.html')
+def index():
+    return render_template('static/html/base.html')
 
 
 @app.route('/register', methods=('GET', 'POST'))
@@ -29,8 +29,8 @@ def register():
             error = 'Password is required.'
         return redirect(url_for("auth.login"))
 
+    return render_template('static/html/auth/register.html')
 
-    return render_template('../static/html/auth/register.html')
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
@@ -51,11 +51,9 @@ def login():
 
         flash(error)
 
-    return render_template('../static/html/auth/login.html')
+    return render_template('static/html/auth/login.html')
 
 
-
-@app.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
 
@@ -64,37 +62,31 @@ def load_logged_in_user():
     else:
         User.query.get(int(user_id))
 
-@bp.route('/logout')
+
+@app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
 
 
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-
-        return view(**kwargs)
-
-    return wrapped_view
-
-@bp.route('/lists')
+@app.route('/lists')
 @login_required
 def show_lists():
-    return render_template('../static/html/lists.html')
+    return render_template('../templates/static/html/lists.html')
 
-@bp.route('/list')
+
+@app.route('/list')
 @login_required
 def show_single_lists():
-    return render_template('../static/html/list.html')
+    return render_template('../templates/static/html/list.html')
 
-@bp.route('/lists/api', methods=['GET'])
+
+@app.route('/lists/api', methods=['GET'])
 @login_required
 def get_lists():
     user = session.get('user_id')
     return "asdf"
+
 
 @app.route('/lists/api', methods=['POST'])
 @login_required
