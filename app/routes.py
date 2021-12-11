@@ -38,7 +38,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         error = None
-        user = User.query(username=username).first()
+        user = User.query.filter_by(username=username).first()
         if user is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password):
