@@ -1,12 +1,13 @@
 import json
+import re
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
-from flask_login import login_required
+from flask_login import login_required, current_user
 from werkzeug.security import check_password_hash
 
-from app import app
+from app import app, db
 from app.models import User
 
 
@@ -18,6 +19,8 @@ def index():
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
+    if 'user_id' in session:
+        return redirect('/')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -27,29 +30,45 @@ def register():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
-        return redirect(url_for("auth.login"))
+        if not re.match('[^@]+@[^@]+\.[^@]+', username):
+            error = 'Name does not seem to be an e-mail address'
+        existing = User.query.filter_by(username=username).first()
+        if existing:
+            error = 'please choose another user name, if you have already register recover your password'
+
+        if error:
+            flash(error)
+        else:
+            user: User = User(username=username)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for("login"))
 
     return render_template('static/html/auth/register.html')
 
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
+    if 'user_id' in session:
+        return redirect('/')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         error = None
         user = User.query.filter_by(username=username).first()
         if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            error = True
+        elif not user.check_password(password):
+            error = True
 
-        if error is None:
+        if not error:
             session.clear()
-            session['user_id'] = user['id']
+            session['user_id'] = user.id
             return redirect('/')
 
-        flash(error)
+
+        flash('Login information not correct')
 
     return render_template('static/html/auth/login.html')
 
