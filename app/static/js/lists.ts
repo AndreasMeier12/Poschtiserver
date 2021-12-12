@@ -79,7 +79,13 @@ function redraw() {
 
 function handleDelete(a: number) {
     return function asdf() {
-        console.log(`List ${a} delete`)
+        const payload = {'id': a, 'origin': ORIGIN}
+        const response = fetch(window.location.href, {
+            method: 'DELETE', headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        }).then()
     }
 }
 
