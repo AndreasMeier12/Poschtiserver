@@ -4,11 +4,13 @@ import re
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user, login_user
 from werkzeug.security import check_password_hash
 
 from app import app, db
-from app.models import User
+from app.business.datatypes import ShoppingList
+from app.forms import AddListForm
+from app.models import User, ListCommand
 
 
 @app.route('/index')
@@ -19,7 +21,7 @@ def index():
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
-    if 'user_id' in session:
+    if current_user.is_authenticated:
         return redirect('/')
     if request.method == 'POST':
         username = request.form['username']
@@ -50,7 +52,7 @@ def register():
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
-    if 'user_id' in session:
+    if current_user.is_authenticated:
         return redirect('/')
     if request.method == 'POST':
         username = request.form['username']
@@ -63,10 +65,8 @@ def login():
             error = True
 
         if not error:
-            session.clear()
-            session['user_id'] = user.id
+            login_user(user)
             return redirect('/')
-
 
         flash('Login information not correct')
 
@@ -88,16 +88,22 @@ def logout():
     return redirect('/')
 
 
-@app.route('/lists')
+@app.route('/lists', methods=('GET', 'POST'))
 @login_required
-def show_lists():
-    return render_template('../templates/static/html/lists.html')
+def lists():
+    form = AddListForm()
+    if request == 'POST':
+
+        listcommand: ListCommand = ListCommand()
+
+    test_lists = [ShoppingList(1,'normal'), ShoppingList(2,'spices')]
+    return render_template('static/html/lists.html', form=form, lists=test_lists)
 
 
 @app.route('/list')
 @login_required
-def show_single_lists():
-    return render_template('../templates/static/html/list.html')
+def single_list():
+    return render_template('static/html/list.html')
 
 
 @app.route('/lists/api', methods=['GET'])

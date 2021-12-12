@@ -2,6 +2,11 @@ let model: ShoppingList[] = []
 
 const ORIGIN = 'server';
 
+
+
+
+
+
 enum CommandType {
     DELETE = 'delete',
     CREATE = 'create',
@@ -90,8 +95,20 @@ function getFromServer() {
 }
 
 function setUp() {
-    getFromServer();
-    redraw();
+    const rows = Array.prototype.slice.call( (<HTMLTableElement>document.getElementById('liststable')).rows);
+    for (const row of rows){
+        const id = row.id.toString()
+        if (id.includes("shopping-list-")) {
+            const idString = id.replace('shopping-list-', '')
+            const numId: number = +idString;
+
+            const button = document.getElementById("delete-" + numId)
+            button.addEventListener("click", handleDelete(numId))
+        }
+
+    }
+
+
 }
 
 
@@ -114,3 +131,5 @@ function handleListSubmit() {
 
 
 }
+
+window.addEventListener("DOMContentLoaded", setUp)
