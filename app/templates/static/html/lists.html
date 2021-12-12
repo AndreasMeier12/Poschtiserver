@@ -3,7 +3,6 @@
 <script src="{{ url_for('static', filename='js/lists.js') }}"></script>
 {% endblock %}
 {% block content %}
-    {{ lists }}
 <table class="tg" id="liststable">
 
     <thead id="listhead">
@@ -15,7 +14,7 @@
     <tbody id="listbody">
     {% for list in lists  %}
     <tr id ="shopping-list-{{ list.id }}">
-    <td>list.name</td>
+    <td>{{ list.name }}</td>
     <td>
         <button type="button" id="delete-{{ list.id }}" data-id="{{ list.id }}">🗑</button>
     </td>
