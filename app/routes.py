@@ -11,9 +11,10 @@ from werkzeug.security import check_password_hash
 
 from app import app, db
 from app.business.datatypes import ShoppingList, CommandType
+from app.business.merge import merge_lists
 from app.forms import AddListForm
 from app.models import User, ListCommandModel
-from app.utils import get_next_list_command_id
+from app.utils import get_next_list_command_id, model_to_internal_list_command
 
 
 @app.route('/index')
@@ -96,7 +97,6 @@ def lists():
     form = AddListForm()
     user_id = current_user.id
     time = datetime.datetime.now()
-
     if request.method == 'POST':
         name = form.data['list_name']
         id_query = db.session.query(func.max(ListCommandModel.command_id)).filter(ListCommandModel.user_id == user_id).first()
@@ -106,16 +106,10 @@ def lists():
         list_query = db.session.query(func.max(ListCommandModel.list_id)).filter(ListCommandModel.user_id == user_id, ListCommandModel.origin == origin).first()
         list_id = get_next_list_command_id(list_query)
 
-        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.CREATE, timestamp=time)
+        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.CREATE, timestamp=time, name=name)
         db.session.add(command)
         db.session.commit()
-
-
-
-
-
         listcommand: ListCommandModel = ListCommandModel()
-
     if request.method == 'DELETE':
         data = json.loads(request.data)
         origin = data['origin']
@@ -126,11 +120,10 @@ def lists():
         db.session.add(command)
         db.session.commit()
 
-
-
-
-    test_lists = [ShoppingList(1,'normal'), ShoppingList(2,'spices')]
-    return render_template('static/html/lists.html', form=form, lists=test_lists)
+    lists_raw = db.session.query(ListCommandModel).filter(ListCommandModel.user_id == user_id).all()
+    lists = [model_to_internal_list_command(x) for x in lists_raw]
+    merged = merge_lists(lists)
+    return render_template('static/html/lists.html', form=form, lists=merged)
 
 
 @app.route('/list')

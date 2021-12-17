@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from datatypes import ShoppingItem, Command, Create, Delete, Update, ListCommand, ShoppingList
+from .datatypes import ShoppingItem, Command, Create, Delete, Update, ListCommand, ShoppingList
 import copy
 
 

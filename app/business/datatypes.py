@@ -11,21 +11,21 @@ class CommandType:
 
     @staticmethod
     def get_by_name(a: str) -> int:
-        if a=='CREATE':
+        if a.lower()=='create':
             return CommandType.CREATE
-        if a=='UPDATE':
+        if a.lower()=='update':
             return CommandType.UPDATE
-        if a=='DELETE':
+        if a.lower()=='delete':
             return CommandType.DELETE
 
     @staticmethod
     def get_by_id(a: int) -> str:
         if a==CommandType.CREATE:
-            return 'CREATE'
+            return 'create'
         if a==CommandType.UPDATE:
-            return 'UPDATE'
+            return 'update'
         if a==CommandType.DELETE:
-            return 'DELETE'
+            return 'delete'
 
 
 @dataclass
