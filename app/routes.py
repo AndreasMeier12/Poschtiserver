@@ -1,3 +1,4 @@
+import datetime
 import json
 import re
 
@@ -5,12 +6,14 @@ from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
 from flask_login import login_required, current_user, login_user
+from sqlalchemy import func
 from werkzeug.security import check_password_hash
 
 from app import app, db
-from app.business.datatypes import ShoppingList
+from app.business.datatypes import ShoppingList, CommandType
 from app.forms import AddListForm
-from app.models import User, ListCommand
+from app.models import User, ListCommandModel
+from app.utils import get_next_list_command_id
 
 
 @app.route('/index')
@@ -66,7 +69,6 @@ def login():
 
         if not error:
             login_user(user)
-            return redirect('/')
 
         flash('Login information not correct')
 
@@ -88,13 +90,27 @@ def logout():
     return redirect('/')
 
 
-@app.route('/lists', methods=('GET', 'POST'))
+@app.route('/lists', methods=('GET', 'POST', 'DELETE'))
 @login_required
 def lists():
     form = AddListForm()
     if request == 'POST':
 
-        listcommand: ListCommand = ListCommand()
+        listcommand: ListCommandModel = ListCommandModel()
+
+    if request.method == 'DELETE':
+        data = json.loads(request.data)
+        user_id = current_user.id
+        origin = data['origin']
+        list_id = data['id']
+        id_query = db.session.query(func.max(ListCommandModel.command_id)).filter(ListCommandModel.user_id == user_id).first()
+        new_id = get_next_list_command_id(id_query)
+        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.DELETE, timestamp=datetime.datetime.now())
+        db.session.add(command)
+        db.session.commit()
+
+
+
 
     test_lists = [ShoppingList(1,'normal'), ShoppingList(2,'spices')]
     return render_template('static/html/lists.html', form=form, lists=test_lists)

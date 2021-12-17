@@ -10,7 +10,6 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    list_commands = db.relationship('ListCommand', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -31,9 +30,11 @@ def load_user(id):
 
 
 
-class ListCommand(db.Model):
+class ListCommandModel(db.Model):
     command_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey('user.id'),  nullable=False, primary_key=True)
     list_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.Integer, nullable=False)
+    origin = db.Column(db.String, nullable=False, default='server')
 

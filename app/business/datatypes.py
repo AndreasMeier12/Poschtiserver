@@ -4,6 +4,31 @@ from abc import ABC
 from datetime import datetime
 
 @dataclass
+class CommandType:
+    CREATE = 1
+    UPDATE = 2
+    DELETE = 3
+
+    @staticmethod
+    def get_by_name(a: str) -> int:
+        if a=='CREATE':
+            return CommandType.CREATE
+        if a=='UPDATE':
+            return CommandType.UPDATE
+        if a=='DELETE':
+            return CommandType.DELETE
+
+    @staticmethod
+    def get_by_id(a: int) -> str:
+        if a==CommandType.CREATE:
+            return 'CREATE'
+        if a==CommandType.UPDATE:
+            return 'UPDATE'
+        if a==CommandType.DELETE:
+            return 'DELETE'
+
+
+@dataclass
 class Log:
     pass
 
@@ -111,10 +136,3 @@ class ShoppingList():
     id: int
     name: str
 
-
-@dataclass()
-class ListCommand:
-    id: int
-    user_id: int
-    name: str
-    origin: str
