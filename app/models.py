@@ -37,4 +37,5 @@ class ListCommandModel(db.Model):
     type = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Integer, nullable=False)
     origin = db.Column(db.String, nullable=False, default='server')
+    name = db.Column(db.String(100))
 

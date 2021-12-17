@@ -94,18 +94,35 @@ def logout():
 @login_required
 def lists():
     form = AddListForm()
-    if request == 'POST':
+    user_id = current_user.id
+    time = datetime.datetime.now()
+
+    if request.method == 'POST':
+        name = form.data['list_name']
+        id_query = db.session.query(func.max(ListCommandModel.command_id)).filter(ListCommandModel.user_id == user_id).first()
+        new_id = get_next_list_command_id(id_query)
+        origin='server'
+
+        list_query = db.session.query(func.max(ListCommandModel.list_id)).filter(ListCommandModel.user_id == user_id, ListCommandModel.origin == origin).first()
+        list_id = get_next_list_command_id(list_query)
+
+        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.CREATE, timestamp=time)
+        db.session.add(command)
+        db.session.commit()
+
+
+
+
 
         listcommand: ListCommandModel = ListCommandModel()
 
     if request.method == 'DELETE':
         data = json.loads(request.data)
-        user_id = current_user.id
         origin = data['origin']
         list_id = data['id']
         id_query = db.session.query(func.max(ListCommandModel.command_id)).filter(ListCommandModel.user_id == user_id).first()
         new_id = get_next_list_command_id(id_query)
-        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.DELETE, timestamp=datetime.datetime.now())
+        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.DELETE, timestamp=time)
         db.session.add(command)
         db.session.commit()
 
