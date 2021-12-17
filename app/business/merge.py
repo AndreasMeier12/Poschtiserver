@@ -1,8 +1,7 @@
+import copy
 from typing import Dict, List
 
-from .datatypes import ShoppingItem, Command, Create, Delete, Update, ListCommand, ShoppingList
-import copy
-
+from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, CommandType
 
 
 def merge(client, server):
@@ -29,15 +28,15 @@ def find_max_id(client_ids: dict, server_ids: dict):
     return max( max( client_ids.values() ), max(server_ids.values()))
 
 def handle(command: Command, res, client_ids, server_ids):
-    if isinstance(command, Update):
+    if command.type == CommandType.UPDATE:
         handle_update(command, res, client_ids, server_ids)
-    if isinstance(command, Create):
+    if command.type == CommandType.CREATE:
         handle_create(command, res, client_ids, server_ids)
-    if isinstance(command, Delete):
+    if command.type == CommandType.DELETE:
         handle_delete(command, res, client_ids, server_ids)
 
 
-def handle_create( a: Create, res: dict, client_ids: dict, server_ids: dict ):
+def handle_create( a: Command, res: dict, client_ids: dict, server_ids: dict ):
     max_id = find_max_id(client_ids, server_ids)
     cur_id = max_id + 1
     if a.get_origin() == 'server':
@@ -49,7 +48,7 @@ def handle_create( a: Create, res: dict, client_ids: dict, server_ids: dict ):
     res[cur_id] = asdf
 
 
-def handle_update(a: Update, res: dict, client_ids, server_ids):
+def handle_update(a: Command, res: dict, client_ids, server_ids):
     asdf: ShoppingItem = copy.copy(a.get_item())
     if a.get_origin() == 'server':
         asdf.id = server_ids[a.get_id()]
@@ -58,7 +57,7 @@ def handle_update(a: Update, res: dict, client_ids, server_ids):
     res[asdf.id] = asdf
 
 
-def handle_delete(a: Delete, res, client_ids: dict, server_ids: dict):
+def handle_delete(a: Command, res, client_ids: dict, server_ids: dict):
     if a.get_origin() == 'server':
         del res[server_ids[a.get_id()]]
     else:

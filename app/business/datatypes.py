@@ -40,16 +40,14 @@ class ShoppingItem:
     id: int
     list_id: int
 
-def get_command(id: int, list_id: int, name: str, shop: str, quantity: str, timestamp: datetime, type: 'str', origin: str):
-    item : ShoppingItem = ShoppingItem(name, quantity, shop, id, list_id)
-    if type == 'update':
-        return Update(item, timestamp, origin)
-    if type == 'create':
-        return Create(item, timestamp, origin)
-    if type == 'delete':
-        return Delete(item, timestamp, origin)
+class Command:
+    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str, type: CommandType):
+        self.item: ShoppingItem = item
+        self.timestamp: datetime = timestamp
+        self.origin = origin
+        self.type = type
 
-class Command(ABC):
+
     def get_timestamp(self):
         pass
 
@@ -57,67 +55,20 @@ class Command(ABC):
         return self.get_timestamp() < other.get_timestamp()
 
     def get_origin(self):
-        pass
+        return self.origin
 
     def get_id(self):
-        pass
-    def get_item(self):
-        pass
-
-
-class Update(Command):
-    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str):
-        self.item: ShoppingItem = item
-        self.timestamp: datetime = timestamp
-        self.origin = origin
+        return self.get_item().id
 
     def get_item(self) -> ShoppingItem:
         return self.item
 
-    def get_origin(self):
-        return self.origin
-
-    def get_id(self):
-        return self.item.id
+    def get_type(self) -> CommandType:
+        self.type
 
     def get_timestamp(self):
         return self.timestamp
 
-class Create(Command):
-    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str):
-        self.item : ShoppingItem = item
-        self.timestamp: datetime = timestamp
-        self.origin = origin
-
-    def get_item(self) -> ShoppingItem:
-        return self.item
-
-    def get_timestamp(self):
-        return self.timestamp
-
-    def get_origin(self):
-        return self.origin
-
-    def get_id(self):
-        return self.item.id
-
-class Delete(Command):
-    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str):
-        self.item : ShoppingItem = item
-        self.timestamp: datetime = timestamp
-        self.origin = origin
-
-    def get_item(self) -> ShoppingItem:
-        return self.item
-
-    def get_timestamp(self):
-        return self.timestamp
-
-    def get_origin(self):
-        return self.origin
-
-    def get_id(self):
-        return self.item.id
 
 @dataclass()
 class ShoppingList:
