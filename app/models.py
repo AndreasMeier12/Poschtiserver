@@ -39,3 +39,13 @@ class ListCommandModel(db.Model):
     origin = db.Column(db.String, nullable=False, default='server')
     name = db.Column(db.String(100))
 
+class ItemCommandModel(db.Model):
+    command_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey('user.id'),  nullable=False, primary_key=True)
+    list_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.Integer, nullable=False)
+    origin = db.Column(db.String, nullable=False, default='server')
+    name = db.Column(db.String(100))
+    quantity = db.Column(db.String(100))
+    shop = db.Column(db.String(100))
