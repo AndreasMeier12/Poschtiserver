@@ -70,8 +70,8 @@ def login():
 
         if not error:
             login_user(user)
-
-        flash('Login information not correct')
+        else:
+            flash('Login information not correct')
 
     return render_template('static/html/auth/login.html')
 
