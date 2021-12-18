@@ -51,6 +51,10 @@
         <tbody id="listbody">
         {% for item in items %}
             <tr id="shopping-item-{{ item.id }}"
+                data-name="{{ item.name }}"
+                data-shop="{{ item.shop }}"
+                data-quantity="{{ item.quantity }}"
+
                     {% if item.done %}
                         data-done="1"
                     {% else %}

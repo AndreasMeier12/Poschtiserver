@@ -11,14 +11,19 @@ function setUp() {
             const button = document.getElementById("delete-" + idString)
             button.addEventListener("click", handleDelete(idString))
 
+
+
             const checkButton = document.getElementById("check-" + idString)
             let doneness: boolean = false
 
             if (row.dataset.done == "1"){
                 doneness = true
             }
+            const name = row.dataset.name
+            const shop = row.dataset.shop
+            const quantity = row.dataset.quantity
 
-            checkButton.addEventListener("click", handleCheck(idString, doneness))
+            checkButton.addEventListener("click", handleCheck(idString, doneness, name, shop, quantity))
         }
 
     }
@@ -35,10 +40,10 @@ function handleDelete(a: string) {
         }).then()
     }
 }
-function handleCheck(a: string, done: boolean){
+function handleCheck(a: string, done: boolean, name: string, shop: string, quantity: string){
     console.log(a, done)
         return function asdf() {
-        const payload = {'id': a, 'origin': ORIGIN, 'done': !done}
+        const payload = {'id': a, 'origin': ORIGIN, 'done': !done, 'name': name, 'shop': shop, 'quantity': quantity}
         const response = fetch(window.location.href, {
             method: 'PATCH', headers: {
                 'Content-Type': 'application/json',

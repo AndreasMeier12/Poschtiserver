@@ -53,4 +53,4 @@ class ItemCommandModel(db.Model):
     name = db.Column(db.String(100))
     quantity = db.Column(db.String(100))
     shop = db.Column(db.String(100))
-    done = db.Column(db.Boolean)
+    done = db.Column(db.Boolean, default=False)

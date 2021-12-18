@@ -142,6 +142,17 @@ def single_list(list_id):
         db.session.add(command)
         db.session.commit()
         pass
+    if request.method == 'PATCH':
+        data = json.loads(request.data)
+        command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=data['id'], list_id=list_id, type=CommandType.UPDATE.value, timestamp=time, name=data['name'], shop=data['shop'], quantity=data['quantity'], done=data['done'])
+        db.session.add(command)
+        db.session.commit()
+    if request.method == 'DELETE':
+        data = json.loads(request.data)
+        command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=data['id'], list_id=list_id, type=CommandType.DELETE.value, timestamp=time)
+        db.session.add(command)
+        db.session.commit()
+
     items_raw = db.session.query(ItemCommandModel).filter(ItemCommandModel.user_id == user_id, ItemCommandModel.list_id == list_id).all()
     items = [model_to_internal_item_command(x) for x in items_raw]
     merged = merge(items)
