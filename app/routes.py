@@ -1,7 +1,7 @@
 import datetime
 import json
 import re
-from app.utils import get_uuid_str as uuid, model_to_internal_item_command
+from app.utils import get_uuid_str as uuid, model_to_internal_item_command, get_uuid_str
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
@@ -46,7 +46,7 @@ def register():
         if error:
             flash(error)
         else:
-            user: User = User(username=username, id=str(uuid.uuid1()))
+            user: User = User(username=username, id=str(uuid()))
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
@@ -100,10 +100,10 @@ def lists():
     time = datetime.datetime.now()
     if request.method == 'POST':
         name = form.data['list_name']
-        new_id = str(uuid())
+        new_id = get_uuid_str()
         origin='server'
-        list_id = str(uuid())
-        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.CREATE, timestamp=time, name=name)
+        list_id = get_uuid_str()
+        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.CREATE.value, timestamp=time, name=name)
         db.session.add(command)
         db.session.commit()
         listcommand: ListCommandModel = ListCommandModel()
@@ -112,7 +112,7 @@ def lists():
         origin = data['origin']
         list_id = data['id']
         new_id = uuid()
-        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.DELETE, timestamp=time)
+        command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.DELETE.value, timestamp=time)
         db.session.add(command)
         db.session.commit()
 
