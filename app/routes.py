@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+import uuid
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
@@ -45,7 +46,7 @@ def register():
         if error:
             flash(error)
         else:
-            user: User = User(username=username)
+            user: User = User(username=username, id=str(uuid.uuid1()))
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
