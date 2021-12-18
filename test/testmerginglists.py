@@ -2,26 +2,27 @@ import unittest
 from app.business.merge import merge_lists
 from app.business.datatypes import ListCommand, ShoppingList
 from datetime import datetime, timedelta
+from app.utils import get_uuid_str as uuid
 
 class MyTestCase(unittest.TestCase):
 
     def test_simple_client(self):
-        a = ShoppingList(1, "a")
+        a = ShoppingList(uuid(), "a")
         command = ListCommand('client', 'create', a, datetime.now())
 
         res = merge_lists([command])
         self.assertEqual(len(res), 1)
 
     def test_simple_server(self):
-        a = ShoppingList(1, "a")
+        a = ShoppingList(uuid(), "a")
         command = ListCommand('server', 'create', a, datetime.now())
 
         res = merge_lists([command])
         self.assertEqual(len(res), 1)
 
     def test_simple_both(self):
-        a = ShoppingList(1, "a")
-        b = ShoppingList(1, "b")
+        a = ShoppingList(uuid(), "a")
+        b = ShoppingList(uuid(), "b")
 
         command = ListCommand('server', 'create', a, datetime.now())
 
@@ -33,9 +34,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(res[0].name, 'b')
 
     def test_interleaved(self):
-        a = ShoppingList(1, "a")
-        b = ShoppingList(1, "b")
-        c = ShoppingList(1, "c")
+        a = ShoppingList(uuid(), "a")
+        b = ShoppingList(uuid(), "b")
+        c = ShoppingList(uuid(), "c")
 
         command = ListCommand('server', 'create', a, datetime.now() - timedelta(seconds=12))
 
@@ -50,9 +51,9 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_interleaved_delete(self):
-        a = ShoppingList(1, "a")
-        b = ShoppingList(1, "b")
-        c = ShoppingList(1, "c")
+        a = ShoppingList(uuid(), "a")
+        b = ShoppingList(uuid(), "b")
+        c = ShoppingList(uuid(), "c")
 
         command = ListCommand('server', 'create', a, datetime.now() - timedelta(seconds=12))
 
