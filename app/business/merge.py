@@ -68,7 +68,7 @@ def merge_lists(lists: List[ListCommand]):
     asdf = sorted(lists, key=lambda x: x.timestamp)
     for a in asdf:
         handle_list_command(a, res)
-    return sorted([x for x in res.values()], key=lambda x: x.id)
+    return [x for x in res.values()]
 
 
 def handle_list_command(a: ListCommand, res: Dict[int, ShoppingList]):
