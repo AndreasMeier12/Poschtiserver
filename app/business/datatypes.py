@@ -21,7 +21,7 @@ class CommandType(Enum):
     @staticmethod
     def get_by_id(a: int):
         for i in CommandType:
-            if a is i:
+            if a == i.value:
                 return i
 
 

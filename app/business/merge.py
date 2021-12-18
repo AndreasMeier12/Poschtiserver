@@ -4,8 +4,9 @@ from typing import Dict, List
 from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, CommandType
 
 
-def merge(client, server):
-
+def merge(client, server=None):
+    if server is None:
+        server = []
 
     commands = sorted(client + server)
     res = {}
@@ -17,11 +18,11 @@ def merge(client, server):
 
 
 def handle(command: Command, res):
-    if command.type == CommandType.UPDATE:
+    if command.type is CommandType.UPDATE:
         handle_update(command, res)
-    if command.type == CommandType.CREATE:
+    if command.type is CommandType.CREATE:
         handle_create(command, res)
-    if command.type == CommandType.DELETE:
+    if command.type is CommandType.DELETE:
         handle_delete(command, res)
 
 
