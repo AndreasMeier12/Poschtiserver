@@ -122,9 +122,9 @@ def lists():
     return render_template('static/html/lists.html', form=form, lists=merged)
 
 
-@app.route('/list')
+@app.route('/list/<list_id>')
 @login_required
-def single_list():
+def single_list(list_id):
     return render_template('static/html/list.html')
 
 
