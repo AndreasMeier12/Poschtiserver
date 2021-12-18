@@ -48,9 +48,9 @@ def merge_lists(lists: List[ListCommand]):
 
 
 def handle_list_command(a: ListCommand, res: Dict[int, ShoppingList]):
-    if a.type == 'create':
+    if a.type is CommandType.CREATE:
         create_list(a, res)
-    if a.type == 'delete':
+    if a.type is CommandType.DELETE:
         delete_list(a, res)
 
 

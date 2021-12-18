@@ -4,13 +4,13 @@ from abc import ABC
 from datetime import datetime
 
 @dataclass
-class CommandType:
+class CommandType(Enum):
     CREATE = 1
     UPDATE = 2
     DELETE = 3
 
     @staticmethod
-    def get_by_name(a: str) -> int:
+    def get_by_name(a: str):
         if a.lower()=='create':
             return CommandType.CREATE
         if a.lower()=='update':
@@ -19,13 +19,10 @@ class CommandType:
             return CommandType.DELETE
 
     @staticmethod
-    def get_by_id(a: int) -> str:
-        if a==CommandType.CREATE:
-            return 'create'
-        if a==CommandType.UPDATE:
-            return 'update'
-        if a==CommandType.DELETE:
-            return 'delete'
+    def get_by_id(a: int):
+        for i in CommandType:
+            if a is i:
+                return i
 
 
 @dataclass
@@ -78,7 +75,7 @@ class ShoppingList:
 @dataclass
 class ListCommand():
     origin: str
-    type: str
+    type: CommandType
     item: ShoppingList
     timestamp: datetime
 
