@@ -65,24 +65,22 @@ def handle_delete(a: Command, res, client_ids: dict, server_ids: dict):
 
 def merge_lists(lists: List[ListCommand]):
     res: Dict[int, ShoppingList] = {}
-    server_ids: Dict[int, int] = {}
-    client_ids: Dict[int, int] = {}
     asdf = sorted(lists, key=lambda x: x.timestamp)
     for a in asdf:
-        handle_list_command(a, res, server_ids, client_ids)
+        handle_list_command(a, res)
     return sorted([x for x in res.values()], key=lambda x: x.id)
 
 
-def handle_list_command(a: ListCommand, res: Dict[int, ShoppingList], server_ids: dict, client_ids: dict):
+def handle_list_command(a: ListCommand, res: Dict[int, ShoppingList]):
     if a.type == 'create':
-        create_list(a, res, server_ids, client_ids)
+        create_list(a, res)
     if a.type == 'delete':
-        delete_list(a, res, server_ids, client_ids)
+        delete_list(a, res)
 
 
 
-def create_list(a: ListCommand, res: Dict[int, ShoppingList], server_ids: dict, client_ids: dict):
+def create_list(a: ListCommand, res: Dict[int, ShoppingList]):
     res[a.item.id] = ShoppingList(a.item.id, a.item.name)
 
-def delete_list(a: ListCommand, res: Dict[int, ShoppingList], server_ids: dict, client_ids: dict):
+def delete_list(a: ListCommand, res: Dict[int, ShoppingList]):
         del res[a.item.id]
