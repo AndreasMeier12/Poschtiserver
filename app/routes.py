@@ -1,7 +1,7 @@
 import datetime
 import json
 import re
-import uuid
+from app.utils import get_uuid_str as uuid
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
@@ -100,13 +100,9 @@ def lists():
     time = datetime.datetime.now()
     if request.method == 'POST':
         name = form.data['list_name']
-        id_query = db.session.query(func.max(ListCommandModel.command_id)).filter(ListCommandModel.user_id == user_id).first()
-        new_id = get_next_list_command_id(id_query)
+        new_id = str(uuid())
         origin='server'
-
-        list_query = db.session.query(func.max(ListCommandModel.list_id)).filter(ListCommandModel.user_id == user_id, ListCommandModel.origin == origin).first()
-        list_id = get_next_list_command_id(list_query)
-
+        list_id = str(uuid())
         command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.CREATE, timestamp=time, name=name)
         db.session.add(command)
         db.session.commit()
