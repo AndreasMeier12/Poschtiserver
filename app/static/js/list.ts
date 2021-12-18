@@ -1,87 +1,54 @@
-let model : ShopItem[] = []
-const LISTID = 1
+const ORIGIN = 'server'
 
-class ShopItem {
-    id: number;
-    listId: number;
-    name: string;
-    shop: string;
-    quantity: string;
-    done: boolean;
+function setUp() {
+    const rows = Array.prototype.slice.call((<HTMLTableElement>document.getElementById('listtable')).rows);
+    for (const row of rows) {
+        const id = row.id.toString()
+        if (id.includes("shopping-item-")) {
 
-    constructor(id: number, listId: number, name: string, shop: string, quantity: string, done: boolean){
-        this.id = id;
-        this.listId = listId;
-        this.name = name;
-        this.shop = shop;
-        this.quantity = quantity;
-        this.done = done;
+            const idString = id.replace('shopping-item-', '')
 
-}
+            const button = document.getElementById("delete-" + idString)
+            button.addEventListener("click", handleDelete(idString))
 
+            const checkButton = document.getElementById("check-" + idString)
+            let doneness: boolean = false
 
+            if (row.dataset.done == "1"){
+                doneness = true
+            }
 
-}
+            checkButton.addEventListener("click", handleCheck(idString, doneness))
+        }
 
-function checkDone(a: number){
-   return function asdf (){
-       console.log( `Item ${a} checked`)
-   }
-}
-
-function getMaxId() : number{
-return  model.map(x => x.id).reduce(function(a, b) {
-    return Math.max(a, b);
-}, 0);
-}
-
-
-function create(){
-    const itemId : number = getMaxId() + 1
-    const name : string = (<HTMLInputElement>document.getElementById("inputname")).value
-    const quantity = (<HTMLInputElement>document.getElementById("inputquantity")).value
-    const shop = (<HTMLInputElement>document.getElementById("inputshop")).value
-    const done = false
-    const newItem = new ShopItem(itemId, LISTID, name, shop, quantity, done)
-    model.push(newItem)
-    addToList(newItem)
-}
-
-function clearForm(){
-    (<HTMLInputElement>document.getElementById("inputname")).value = "";
-    (<HTMLInputElement>document.getElementById("inputquantity")).value = "";
-    (<HTMLInputElement>document.getElementById("inputshop")).value = ""
-}
-
-function handleItemSubmit(){
-    create()
-    clearForm()
-
-}
-
-function addToList(a: ShopItem){
-    const table = <HTMLTableElement>document.getElementById("listtable");
-    const row = table.insertRow(-1)
-    row.id = "row"+ a.id.toString()
-    const name = row.insertCell(0)
-    name.innerHTML = a.name;
-    row.insertCell(1).innerHTML=a.quantity
-    row.insertCell(2).innerHTML=a.shop
-    if (a.done){
-        name.innerHTML = "<S>" + name.innerHTML + "</S>>"
     }
-    const btn = document.createElement('input');
-    btn.type = 'button';
-    btn.value = "✅";
-    btn.addEventListener("click", checkDone(a.id))
-    row.insertCell(3).appendChild(btn)
-    const deleteButton = document.createElement('input');
-    deleteButton.type = "button";
-    deleteButton.value = "🗑";
-    row.insertCell(4).appendChild(deleteButton)
+}
 
-
-
+function handleDelete(a: string) {
+    return function asdf() {
+        const payload = {'id': a, 'origin': ORIGIN}
+        const response = fetch(window.location.href, {
+            method: 'DELETE', headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        }).then()
+    }
+}
+function handleCheck(a: string, done: boolean){
+    console.log(a, done)
+        return function asdf() {
+        const payload = {'id': a, 'origin': ORIGIN, 'done': !done}
+        const response = fetch(window.location.href, {
+            method: 'PATCH', headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        }).then()
+    }
 }
 
 
+
+
+window.addEventListener("DOMContentLoaded", setUp)

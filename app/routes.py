@@ -122,7 +122,7 @@ def lists():
     return render_template('static/html/lists.html', form=form, lists=merged)
 
 
-@app.route('/list/<list_id>', methods=['GET', 'POST'])
+@app.route('/list/<list_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 @login_required
 def single_list(list_id):
     form = AddItemForm()
@@ -137,7 +137,7 @@ def single_list(list_id):
         shop = form.data['shop']
         quantity = form.data['quantity']
 
-        command = ItemCommandModel(command_id=uuid(), user_id=user_id, item_id=uuid(), list_id=list_id, type=CommandType.CREATE, timestamp=time,
+        command = ItemCommandModel(command_id=uuid(), user_id=user_id, item_id=uuid(), list_id=list_id, type=CommandType.CREATE.value, timestamp=time,
                                    name=item, quantity=quantity, shop=shop)
         db.session.add(command)
         db.session.commit()

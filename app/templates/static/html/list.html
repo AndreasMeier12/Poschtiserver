@@ -3,42 +3,87 @@
     <script src="../../../static/js/list.js"></script>
 {% endblock %}
 {% block content %}
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-</style>
-<table class="tg" id="listtable">
-<thead id="listhead">
-  <tr>
-    <th class="tg-0pky">item</th>
-    <th class="tg-0pky">quantity</th>
-    <th class="tg-0pky">shop</th>
-    <th class="tg-0pky"> <br></th>
-    <th class="tg-0pky"> </th>
-  </tr>
-</thead>
-<tbody id="listbody">
-{% for item in items %}
-    <tr id ="shopping-item-{{ item.id }}">
-        <td>>{{ item.name }}/td>
-        <td>>{{ item.quantity }}/td>
-        <td>>{{ item.shop }}/td>
+    <style type="text/css">
+        .tg {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
 
-        <button type="button" id="check-{{ item.id }}" data-id="{{ item.id }}">✅</button>
+        .tg td {
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            overflow: hidden;
+            padding: 10px 5px;
+            word-break: normal;
+        }
 
-        <button type="button" id="delete-{{ item.id }}" data-id="{{ item.id }}">🗑</button>
-    </td>
+        .tg th {
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            overflow: hidden;
+            padding: 10px 5px;
+            word-break: normal;
+        }
 
-    </tr>
+        .tg .tg-0pky {
+            border-color: inherit;
+            text-align: left;
+            vertical-align: top
+        }
+    </style>
+    <table class="tg" id="listtable">
+        <thead id="listhead">
+        <tr>
+            <th class="tg-0pky">item</th>
+            <th class="tg-0pky">quantity</th>
+            <th class="tg-0pky">shop</th>
+            <th class="tg-0pky"><br></th>
+            <th class="tg-0pky"></th>
+        </tr>
+        </thead>
+        <tbody id="listbody">
+        {% for item in items %}
+            <tr id="shopping-item-{{ item.id }}"
+                    {% if item.done %}
+                        data-done="1"
+                    {% else %}
+                data-done="0"
+                    {% endif %}
 
-{% endfor %}
+            >
+                <td>
+                    {% if item.done %}
+                        <s>
+                    {% endif %}
+                    {{ item.name }}
+                    {% if item.done %}
+                        </s>
+                    {% endif %}
+                </td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.shop }}</td>
 
-</tbody>
-</table>
+                <td>
+                    <button type="button" id="check-{{ item.id }}" data-id="{{ item.id }}">✅</button>
+                </td>
+
+                <td>
+                    <button type="button" id="delete-{{ item.id }}" data-id="{{ item.id }}">🗑</button>
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
     <p>
     <form action="{{ url_for('single_list', list_id=list_id) }}" method="post">
         <fieldset class="form-field">
