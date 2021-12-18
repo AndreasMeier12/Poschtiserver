@@ -111,8 +111,7 @@ def lists():
         data = json.loads(request.data)
         origin = data['origin']
         list_id = data['id']
-        id_query = db.session.query(func.max(ListCommandModel.command_id)).filter(ListCommandModel.user_id == user_id).first()
-        new_id = get_next_list_command_id(id_query)
+        new_id = uuid()
         command = ListCommandModel(command_id=new_id, list_id=list_id, origin=origin, user_id=user_id, type=CommandType.DELETE, timestamp=time)
         db.session.add(command)
         db.session.commit()

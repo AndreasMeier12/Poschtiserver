@@ -37,7 +37,7 @@ class ShoppingItem:
     name: str
     quantity: str
     shop: str
-    id: int
+    id: str
     list_id: int
 
 class Command:
@@ -72,7 +72,7 @@ class Command:
 
 @dataclass()
 class ShoppingList:
-    id: int
+    id: str
     name: str
 
 @dataclass

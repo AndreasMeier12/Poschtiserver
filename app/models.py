@@ -33,18 +33,20 @@ def load_user(id):
 
 
 class ListCommandModel(db.Model):
-    command_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey('user.id'),  nullable=False, primary_key=True)
-    list_id = db.Column(db.Integer, nullable=False)
+    command_id = db.Column(db.String(40), primary_key=True)
+    user_id = db.Column(db.String(40), ForeignKey('user.id'),  nullable=False, primary_key=True)
+    list_id = db.Column(db.String(40))
     type = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Integer, nullable=False)
     origin = db.Column(db.String, nullable=False, default='server')
     name = db.Column(db.String(100))
 
 class ItemCommandModel(db.Model):
-    command_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey('user.id'),  nullable=False, primary_key=True)
-    list_id = db.Column(db.Integer, nullable=False)
+    command_id = db.Column(db.String(40), primary_key=True)
+    user_id = db.Column(db.String(40), ForeignKey('user.id'), primary_key=True)
+    list_id = db.Column(db.String(40))
+    item_id = db.Column(db.String(40))
+
     type = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Integer, nullable=False)
     origin = db.Column(db.String, nullable=False, default='server')

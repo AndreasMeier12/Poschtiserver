@@ -40,10 +40,6 @@ class ListCommand {
 }
 
 
-function createList() {
-
-
-}
 
 function getMaxId() {
     return model.map(x => x.id).reduce(function (a, b) {
@@ -51,33 +47,10 @@ function getMaxId() {
     }, 0);
 }
 
-function deleteList(list: ShoppingList) {
-    const payload = {}
 
 
-}
 
-function displayList(list: ShoppingList) {
-}
-
-function redraw() {
-    const table = <HTMLTableElement>(document.getElementById('listbody'));
-    for (const a of model) {
-        const row = table.insertRow(-1)
-        const nameCell = row.insertCell(0)
-        const deleteCell = row.insertCell(1)
-        const deleteButton = document.createElement('input');
-        deleteButton.type = "button";
-        deleteButton.value = "🗑";
-        deleteButton.addEventListener("click", handleDelete(a.id))
-        nameCell.innerText = a.name
-        deleteCell.appendChild(deleteButton)
-    }
-
-
-}
-
-function handleDelete(a: number) {
+function handleDelete(a: string) {
     return function asdf() {
         const payload = {'id': a, 'origin': ORIGIN}
         const response = fetch(window.location.href, {
@@ -90,15 +63,6 @@ function handleDelete(a: number) {
 }
 
 
-function getFromServer() {
-    fetch('', {}).then(
-        response => {
-            model = JSON.parse(response.toString());
-        }
-    )
-
-
-}
 
 function setUp() {
     const rows = Array.prototype.slice.call( (<HTMLTableElement>document.getElementById('liststable')).rows);
@@ -106,10 +70,10 @@ function setUp() {
         const id = row.id.toString()
         if (id.includes("shopping-list-")) {
             const idString = id.replace('shopping-list-', '')
-            const numId: number = +idString;
+            const numId: number = idString;
 
-            const button = document.getElementById("delete-" + numId)
-            button.addEventListener("click", handleDelete(numId))
+            const button = document.getElementById("delete-" + idString)
+            button.addEventListener("click", handleDelete(idString))
         }
 
     }
