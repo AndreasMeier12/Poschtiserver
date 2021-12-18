@@ -17,7 +17,7 @@ def model_to_internal_list_command(a: ListCommandModel) -> ListCommand:
 
 
 def model_to_internal_item_command(a: ItemCommandModel) -> Command:
-    payload = ShoppingItem(a.name, a.quantity, a.shop, a.item_id, a.list_id)
+    payload = ShoppingItem(a.name, a.quantity, a.shop, a.item_id, a.list_id, done=a.done)
     return Command(payload, a.timestamp, a.origin, datatypes.CommandType.get_by_id(a.type))
 
 

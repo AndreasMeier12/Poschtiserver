@@ -36,6 +36,7 @@ class ShoppingItem:
     shop: str
     id: str
     list_id: str
+    done: bool = False
 
 class Command:
     def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str, type: CommandType):
@@ -65,6 +66,7 @@ class Command:
 
     def get_timestamp(self):
         return self.timestamp
+
 
 
 @dataclass()
