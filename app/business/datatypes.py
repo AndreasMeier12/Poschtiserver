@@ -82,8 +82,5 @@ class ListCommand():
     item: ShoppingList
     timestamp: datetime
 
-@dataclass()
-class ShoppingList():
-    id: int
-    name: str
+
 
