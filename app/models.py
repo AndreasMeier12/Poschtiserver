@@ -20,7 +20,10 @@ class User(UserMixin, db.Model):
         self.password_hash = ph.hash(password)
 
     def check_password(self, password):
-        return ph.verify(self.password_hash, password)
+        verified = ph.verify(self.password_hash, password)
+        if verified and ph.check_needs_rehash(self.password_hash):
+            self.set_password(password)
+        return verified
 
 
 @login.user_loader
