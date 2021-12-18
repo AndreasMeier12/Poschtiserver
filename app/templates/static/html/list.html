@@ -22,16 +22,36 @@
   </tr>
 </thead>
 <tbody id="listbody">
+{% for item in items %}
+    <tr id ="shopping-item-{{ item.id }}">
+        <td>>{{ item.name }}/td>
+        <td>>{{ item.quantity }}/td>
+        <td>>{{ item.shop }}/td>
+
+        <button type="button" id="check-{{ item.id }}" data-id="{{ item.id }}">✅</button>
+
+        <button type="button" id="delete-{{ item.id }}" data-id="{{ item.id }}">🗑</button>
+    </td>
+
+    </tr>
+
+{% endfor %}
+
 </tbody>
 </table>
- <form>
-  <label for="name">First name:</label><br>
-  <input type="text" id="inputname" name="name"><br>
-     <label for="lname">Quantity:</label><br>
-  <input type="text" id="inputquantity" name="quantity">
-  <label for="lname">Shop:</label><br>
-  <input type="text" id="inputshop" name="lname">
-  <input type="button" value="+" onclick="handleItemSubmit()">
+    <p>
+    <form action="{{ url_for('single_list', list_id=list_id) }}" method="post">
+        <fieldset class="form-field">
+            {{ form.item.label }}
+            {{ form.item(size=20) }}
+            {{ form.quantity.label }}
+            {{ form.quantity(size=20) }}
+            {{ form.shop.label }}
+            {{ form.shop(size=20) }}
+        </fieldset>
 
-</form>
+        {{ form.hidden_tag() }}
+        {{ form.submit(value='create') }}
+    </form>
+    </p>
 {% endblock %}

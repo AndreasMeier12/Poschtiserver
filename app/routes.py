@@ -1,7 +1,7 @@
 import datetime
 import json
 import re
-from app.utils import get_uuid_str as uuid
+from app.utils import get_uuid_str as uuid, model_to_internal_item_command
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
@@ -12,9 +12,9 @@ from werkzeug.security import check_password_hash
 
 from app import app, db
 from app.business.datatypes import ShoppingList, CommandType
-from app.business.merge import merge_lists
-from app.forms import AddListForm
-from app.models import User, ListCommandModel
+from app.business.merge import merge_lists, merge
+from app.forms import AddListForm, AddItemForm
+from app.models import User, ListCommandModel, ItemCommandModel
 from app.utils import get_next_list_command_id, model_to_internal_list_command
 
 
@@ -122,10 +122,33 @@ def lists():
     return render_template('static/html/lists.html', form=form, lists=merged)
 
 
-@app.route('/list/<list_id>')
+@app.route('/list/<list_id>', methods=['GET', 'POST'])
 @login_required
 def single_list(list_id):
-    return render_template('static/html/list.html')
+    form = AddItemForm()
+    user_id = current_user.id
+    time = datetime.datetime.now()
+
+
+
+
+    if request.method == 'POST':
+        item = form.data['item']
+        shop = form.data['shop']
+        quantity = form.data['quantity']
+
+        command = ItemCommandModel(command_id=uuid(), user_id=user_id, item_id=uuid(), list_id=list_id, type=CommandType.CREATE, timestamp=time,
+                                   name=item, quantity=quantity, shop=shop)
+        db.session.add(command)
+        db.session.commit()
+        pass
+    items_raw = db.session.query(ItemCommandModel).filter(ItemCommandModel.user_id == user_id, ItemCommandModel.list_id == list_id).all()
+    items = [model_to_internal_item_command(x) for x in items_raw]
+    merged = merge(items)
+
+
+
+    return render_template('static/html/list.html', form=form, list_id=list_id, items=merged)
 
 
 @app.route('/lists/api', methods=['GET'])

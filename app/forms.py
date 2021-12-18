@@ -10,3 +10,9 @@ class AddListForm(FlaskForm):
 class DeleteListForm(FlaskForm):
     submit = SubmitField(label='Delete!')
 
+class AddItemForm(FlaskForm):
+    item = StringField('Name', validators=[DataRequired()])
+    quantity = StringField('Quantity')
+    shop = StringField('Shop')
+
+    submit = SubmitField(label='Add!')
