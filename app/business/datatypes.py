@@ -38,7 +38,7 @@ class ShoppingItem:
     quantity: str
     shop: str
     id: str
-    list_id: int
+    list_id: str
 
 class Command:
     def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str, type: CommandType):
