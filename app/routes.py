@@ -71,6 +71,7 @@ def login():
 
         if not error:
             login_user(user)
+            return redirect(url_for('lists'))
         else:
             flash('Login information not correct')
 
