@@ -42,11 +42,11 @@
                 <td>{{ item.shop }}</td>
 
                 <td>
-                    <button type="button" id="check-{{ item.id }}" data-id="{{ item.id }}">✅</button>
+                    <button type="button" class="btn btn-success" id="check-{{ item.id }}" data-id="{{ item.id }}">✅</button>
                 </td>
 
                 <td>
-                    <button type="button" id="delete-{{ item.id }}" data-id="{{ item.id }}">🗑</button>
+                    <button type="button" class="btn btn-danger" id="delete-{{ item.id }}" data-id="{{ item.id }}">🗑</button>
                 </td>
 
             </tr>
@@ -67,7 +67,7 @@
         </fieldset>
 
         {{ form.hidden_tag() }}
-        {{ form.submit(value='create') }}
+        {{ form.submit(value='create', class_='btn-success') }}
     </form>
     </p>
     </div>
