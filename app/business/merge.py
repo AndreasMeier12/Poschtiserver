@@ -39,6 +39,7 @@ def handle_update(a: Command, res: dict):
 
 
 def handle_delete(a: Command, res):
+    if a.item.id in res:
         del res[a.get_id()]
 
 def merge_lists(lists: List[ListCommand]):
@@ -61,4 +62,6 @@ def create_list(a: ListCommand, res: Dict[int, ShoppingList]):
     res[a.item.id] = ShoppingList(a.item.id, a.item.name)
 
 def delete_list(a: ListCommand, res: Dict[int, ShoppingList]):
+    if a.item.id in res:
         del res[a.item.id]
+
