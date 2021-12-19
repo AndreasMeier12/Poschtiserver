@@ -1,0 +1,35 @@
+{% extends 'bootstrap/base.html' %}
+{% block title %}Poschtiserver{% endblock %}
+
+{% block navbar %}
+        <nav class="navbar navbar-default">
+            <h1>Poschtiserver</h1>
+            <ul>
+                {% if not current_user.is_anonymous %}
+                    <li><a href="{{ url_for('lists') }}">Your lists</a>
+
+                    <li>
+                        <a href="{{ url_for('logout') }}"><span>{{ session['user_name'] }}</span>
+                            Log Out</a>
+                        {% else %}
+                    <li><a href="{{ url_for('register') }}">Regi⭐</a>
+                    <li><a href="{{ url_for('login') }}">Log In</a>
+                {% endif %}
+            </ul>
+        </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <header>
+            {% block header %}{% endblock %}
+        </header>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+</section>

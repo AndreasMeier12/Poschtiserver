@@ -21,7 +21,7 @@ from app.utils import get_next_list_command_id, model_to_internal_list_command
 @app.route('/index')
 @app.route('/')
 def index():
-    return render_template('static/html/base.html')
+    return render_template('base.html')
 
 
 @app.route('/register', methods=('GET', 'POST'))
@@ -52,7 +52,7 @@ def register():
             db.session.commit()
             return redirect(url_for("login"))
 
-    return render_template('static/html/auth/register.html')
+    return render_template('auth/register.html')
 
 
 @app.route('/login', methods=('GET', 'POST'))
@@ -74,7 +74,7 @@ def login():
         else:
             flash('Login information not correct')
 
-    return render_template('static/html/auth/login.html')
+    return render_template('auth/login.html')
 
 
 def load_logged_in_user():
@@ -119,7 +119,7 @@ def lists():
     lists_raw = db.session.query(ListCommandModel).filter(ListCommandModel.user_id == user_id).all()
     lists = [model_to_internal_list_command(x) for x in lists_raw]
     merged = merge_lists(lists)
-    return render_template('static/html/lists.html', form=form, lists=merged)
+    return render_template('lists.html', form=form, lists=merged)
 
 
 @app.route('/list/<list_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
@@ -159,7 +159,7 @@ def single_list(list_id):
 
 
 
-    return render_template('static/html/list.html', form=form, list_id=list_id, items=merged)
+    return render_template('list.html', form=form, list_id=list_id, items=merged)
 
 
 @app.route('/lists/api', methods=['GET'])
