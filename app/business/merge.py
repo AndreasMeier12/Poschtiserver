@@ -1,5 +1,6 @@
 import copy
 from typing import Dict, List
+from collections import OrderedDict
 
 from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, CommandType
 
@@ -9,7 +10,7 @@ def merge(client, server=None):
         server = []
 
     commands = sorted(client + server)
-    res = {}
+    res = OrderedDict()
     for command in commands:
         handle(command, res)
     return [x for x in res.values()]
@@ -41,7 +42,7 @@ def handle_delete(a: Command, res):
         del res[a.get_id()]
 
 def merge_lists(lists: List[ListCommand]):
-    res: Dict[int, ShoppingList] = {}
+    res: OrderedDict[int, ShoppingList] = OrderedDict()
     asdf = sorted(lists, key=lambda x: x.timestamp)
     for a in asdf:
         handle_list_command(a, res)
