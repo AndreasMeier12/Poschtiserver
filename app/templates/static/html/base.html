@@ -1,8 +1,8 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
+<title>{% block title %}{% endblock %} - Poschtiserver</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>
-  <h1>Flaskr {{ session }}</h1>
+  <h1>Poschtiserver</h1>
   <ul>
     {% if not current_user.is_anonymous %}
               <li><a href="{{ url_for('lists') }}">Your lists</a>
