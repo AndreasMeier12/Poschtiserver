@@ -1,7 +1,8 @@
 import datetime
 import json
 import re
-from app.utils import get_uuid_str as uuid, model_to_internal_item_command, get_uuid_str
+from app.utils import get_uuid_str as uuid, model_to_internal_item_command, \
+    get_uuid_str, list_commands_from_json, item_commands_from_json
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
@@ -9,6 +10,7 @@ from flask import (
 from flask_login import login_required, current_user, login_user
 from sqlalchemy import func
 from werkzeug.security import check_password_hash
+from sqlalchemy import delete
 
 from app import app, db
 from app.business.datatypes import ShoppingList, CommandType
@@ -166,6 +168,36 @@ def single_list(list_id):
 @app.route('/api/list', methods=['GET'])
 def get_lists():
     user = User.query.first()
+    return getData(user)
+
+
+
+@app.route('/api/list', methods=['POST'])
+def handle_list_update():
+    user = User.query.first()
+    a = (request.form.items())
+    b = [x for x in a]
+    c = b[0][0]
+    d = json.loads(c)
+    lists = d['lists']
+    items = d['items']
+    item_commands = [item_commands_from_json(x, user) for x in items]
+    list_commands = [list_commands_from_json(x, user) for x in lists]
+
+    statement = delete(ListCommandModel).where(ListCommandModel.user_id == user.id)
+    statement2 = delete(ItemCommandModel).where(ItemCommandModel.user_id == user.id)
+    db.engine.execute(statement)
+    db.engine.execute(statement2)
+
+    db.session.bulk_save_objects(item_commands)
+    db.session.bulk_save_objects(list_commands)
+    db.session.commit()
+
+
+
+    return getData(user)
+
+def getData(user: User):
     list_commands_raw = db.session.query(ListCommandModel).filter(ListCommandModel.user_id == user.id).all()
     item_commands_raw = db.session.query(ItemCommandModel).filter(ListCommandModel.user_id == user.id).all()
     list_commands = [model_to_internal_list_command(x) for x in list_commands_raw]
@@ -175,11 +207,3 @@ def get_lists():
     vals = {'lists': lists, 'items': items}
 
     return vals
-
-
-@app.route('/api/list', methods=['POST'])
-@login_required
-def handle_list_update():
-    user = User.query.first()
-    a = json.loads(request.data)
-    return "fdsa"

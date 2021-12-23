@@ -12,11 +12,11 @@ class CommandType(Enum):
     @staticmethod
     def get_by_name(a: str):
         if a.lower()=='create':
-            return CommandType.CREATE
+            return CommandType.CREATE.value
         if a.lower()=='update':
-            return CommandType.UPDATE
+            return CommandType.UPDATE.value
         if a.lower()=='delete':
-            return CommandType.DELETE
+            return CommandType.DELETE.value
 
     @staticmethod
     def get_by_id(a: int):

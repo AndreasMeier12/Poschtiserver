@@ -1,9 +1,13 @@
+import datetime
+import json
+
 from sqlalchemy.engine import Row
 from uuid import uuid4
 
 from app.business import datatypes
-from app.business.datatypes import ListCommand, ShoppingList, ShoppingItem, Command
-from app.models import ListCommandModel, ItemCommandModel
+from app.business.datatypes import ListCommand, ShoppingList, ShoppingItem, \
+    Command, CommandType
+from app.models import ListCommandModel, ItemCommandModel, User
 
 
 def get_next_list_command_id(a: Row) -> int:
@@ -24,3 +28,14 @@ def model_to_internal_item_command(a: ItemCommandModel) -> Command:
 
 def get_uuid_str() -> str:
     return str(uuid4())
+
+def item_commands_from_json(a: str, user: User):
+    dict = json.loads(a)
+    item: ShoppingItem =ShoppingItem(dict['name'], dict['quantity'], dict['shop'], dict['itemKey'], dict['shoppingList'], dict['done'])
+    #item, datetime.datetime.fromtimestamp(dict['timestamp']/1e3), 'server', CommandType.get_by_name(dict['type']
+    return ItemCommandModel(command_id = dict['commandKey'], user_id = user.id, list_id = dict['shoppingList'], item_id = dict['itemKey'], type = CommandType.get_by_name(dict['type']), timestamp=datetime.datetime.fromtimestamp(dict['timestamp']/1e3), origin='client', name=dict['name'], quantity=dict['quantity'], shop=dict['shop'], done=dict['done'] )
+
+def list_commands_from_json(a: str, user: User):
+    dict = json.loads(a)
+    list = ShoppingList(dict['listKey'], dict['name'])
+    return ListCommandModel(command_id=dict["commandKey"], name=dict['name'], list_id=dict['listKey'], origin='client', user_id=user.id, type=CommandType.get_by_name(dict['type']), timestamp=datetime.datetime.fromtimestamp(dict['timestamp']/1e3))
