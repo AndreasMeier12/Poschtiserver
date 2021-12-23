@@ -163,16 +163,23 @@ def single_list(list_id):
     return render_template('list.html', form=form, list_id=list_id, items=merged)
 
 
-@app.route('/lists/api', methods=['GET'])
-@login_required
+@app.route('/api/list', methods=['GET'])
 def get_lists():
-    user = session.get('user_id')
-    return "asdf"
+    user = User.query.first()
+    list_commands_raw = db.session.query(ListCommandModel).filter(ListCommandModel.user_id == user.id).all()
+    item_commands_raw = db.session.query(ItemCommandModel).filter(ListCommandModel.user_id == user.id).all()
+    list_commands = [model_to_internal_list_command(x) for x in list_commands_raw]
+    item_commands = [model_to_internal_item_command(x) for x in item_commands_raw]
+    lists = merge_lists(list_commands)
+    items = merge(item_commands)
+    vals = {'lists': lists, 'items': items}
+
+    return vals
 
 
-@app.route('/lists/api', methods=['POST'])
+@app.route('/api/list', methods=['POST'])
 @login_required
 def handle_list_update():
-    user = session.get('user_id')
+    user = User.query.first()
     a = json.loads(request.data)
     return "fdsa"
