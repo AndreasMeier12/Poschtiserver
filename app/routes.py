@@ -164,9 +164,16 @@ def single_list(list_id):
     return render_template('list.html', form=form, list_id=list_id, items=merged)
 
 
-@app.route('/api/list', methods=['GET'])
+@app.route('/api/list', methods=['POST'])
 def get_lists():
-    user = User.query.first()
+    a = (request.form.items())
+    b = [x for x in a]
+    c = b[0][0]
+    d = json.loads(c)
+    token = d['token']
+    user = authenticate_via_token(token)
+    if user is None:
+        return "Failed to authenticate"
     return getData(user)
 
 
