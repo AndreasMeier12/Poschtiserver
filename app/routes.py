@@ -172,7 +172,7 @@ def get_lists():
 
 
 
-@app.route('/api/list', methods=['POST'])
+@app.route('/api/list', methods=['POST', 'PATCH'])
 def handle_list_update():
     user = User.query.first()
     a = (request.form.items())
@@ -183,11 +183,11 @@ def handle_list_update():
     items = d['items']
     item_commands = [item_commands_from_json(x, user) for x in items]
     list_commands = [list_commands_from_json(x, user) for x in lists]
-
-    statement = delete(ListCommandModel).where(ListCommandModel.user_id == user.id)
-    statement2 = delete(ItemCommandModel).where(ItemCommandModel.user_id == user.id)
-    db.engine.execute(statement)
-    db.engine.execute(statement2)
+    if request.method == 'POST':
+        statement = delete(ListCommandModel).where(ListCommandModel.user_id == user.id)
+        statement2 = delete(ItemCommandModel).where(ItemCommandModel.user_id == user.id)
+        db.engine.execute(statement)
+        db.engine.execute(statement2)
 
     db.session.bulk_save_objects(item_commands)
     db.session.bulk_save_objects(list_commands)
