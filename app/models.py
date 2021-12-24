@@ -1,4 +1,6 @@
 import datetime
+import logging
+from typing import Optional
 
 import jwt
 from sqlalchemy import ForeignKey
@@ -51,7 +53,7 @@ class User(UserMixin, db.Model):
 
     #https://realpython.com/token-based-authentication-with-flask/
     @staticmethod
-    def decode_auth_token(auth_token):
+    def decode_auth_token(auth_token) -> Optional[str]:
         """
         Decodes the auth token
         :param auth_token:
@@ -61,9 +63,10 @@ class User(UserMixin, db.Model):
             payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
             return payload['sub']
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            logging.log(logging.INFO, "Token expired")
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+            logging.log(logging.INFO, "Token invalid")
+        return None
 
 
 @login.user_loader

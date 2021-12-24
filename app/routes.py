@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+from typing import Optional
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
@@ -170,13 +171,17 @@ def get_lists():
 
 
 
-@app.route('/api/list', methods=['POST', 'PATCH'])
+@app.route('/api/list', methods=['PUT', 'PATCH'])
 def handle_list_update():
-    user = User.query.first()
     a = (request.form.items())
     b = [x for x in a]
     c = b[0][0]
     d = json.loads(c)
+    token = d['token']
+    user = authenticate_via_token(token)
+    if user is None:
+        return "Failed to authenticate"
+
     lists = d['lists']
     items = d['items']
     item_commands = [item_commands_from_json(x, user) for x in items]
@@ -218,3 +223,12 @@ def token():
 def get_token():
    token = current_user.encode_auth_token()
    return {'val': token.decode('utf-8')}
+
+def authenticate_via_token(token: str) -> Optional[User]:
+    user_id = User.decode_auth_token(token.strip().encode())
+    if not user_id:
+        return "Invalid token"
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return None
+    return user
