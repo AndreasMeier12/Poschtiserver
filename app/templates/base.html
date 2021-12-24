@@ -16,6 +16,7 @@
             <ul>
                 {% if not current_user.is_anonymous %}
                     <li><a href="{{ url_for('lists') }}">Your lists</a>
+                    <li><a href="{{ url_for('token') }}">Tokens</a>
 
                     <li>
                         <a href="{{ url_for('logout') }}"><span>{{ session['user_name'] }}</span>

@@ -13,6 +13,7 @@ greenlet==1.1.2
 importlib-metadata==4.8.1
 importlib-resources==5.4.0
 itsdangerous==2.0.1
+pyjwt==1.4.2
 Jinja2==3.0.2
 Mako==1.1.5
 MarkupSafe==2.0.1

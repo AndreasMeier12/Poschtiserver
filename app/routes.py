@@ -1,23 +1,21 @@
 import datetime
 import json
 import re
-from app.utils import get_uuid_str as uuid, model_to_internal_item_command, \
-    get_uuid_str, list_commands_from_json, item_commands_from_json
 
 from flask import (
     flash, g, redirect, render_template, request, session, url_for
 )
 from flask_login import login_required, current_user, login_user
-from sqlalchemy import func
-from werkzeug.security import check_password_hash
 from sqlalchemy import delete
 
 from app import app, db
-from app.business.datatypes import ShoppingList, CommandType
+from app.business.datatypes import CommandType
 from app.business.merge import merge_lists, merge
 from app.forms import AddListForm, AddItemForm
 from app.models import User, ListCommandModel, ItemCommandModel
-from app.utils import get_next_list_command_id, model_to_internal_list_command
+from app.utils import get_uuid_str as uuid, model_to_internal_item_command, \
+    get_uuid_str, list_commands_from_json, item_commands_from_json
+from app.utils import model_to_internal_list_command
 
 
 @app.route('/index')
@@ -207,3 +205,16 @@ def getData(user: User):
     vals = {'lists': lists, 'items': items}
 
     return vals
+
+
+@login_required
+@app.route('/token', methods=['GET'])
+def token():
+    return render_template('auth/token.html')
+
+
+@login_required
+@app.route('/api/token', methods=['GET'])
+def get_token():
+   token = current_user.encode_auth_token()
+   return {'val': token.decode('utf-8')}

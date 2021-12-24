@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+    <script defer src="../../../static/js/token.js"></script>
+  <h1>{% block title %}Tokens {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+        <div class="container">
+        <code id="token-paragraph"></code>
+        <button onclick="getToken()">Get token</button>
+        </div>
+{% endblock %}

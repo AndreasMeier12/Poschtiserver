@@ -1,12 +1,16 @@
+import datetime
+
+import jwt
 from sqlalchemy import ForeignKey
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from argon2 import PasswordHasher
 
-from app import db, login
+from app import db, login, app
 
 ph = PasswordHasher()
+TOKEN_TTL_DAYS = 2
 
 class User(UserMixin, db.Model):
     id = db.Column(db.String(40), primary_key=True)
@@ -24,6 +28,42 @@ class User(UserMixin, db.Model):
         if verified and ph.check_needs_rehash(self.password_hash):
             self.set_password(password)
         return verified
+
+    #https://realpython.com/token-based-authentication-with-flask/
+    def encode_auth_token(self):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=TOKEN_TTL_DAYS),
+                'iat': datetime.datetime.utcnow(),
+                'sub': self.id
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    #https://realpython.com/token-based-authentication-with-flask/
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
 
 
 @login.user_loader
