@@ -84,7 +84,7 @@ class ListCommandModel(db.Model):
     list_id = db.Column(db.String(40))
     type = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Integer, nullable=False)
-    origin = db.Column(db.String, nullable=False, default='server')
+    origin = db.Column(db.String(10), nullable=False, default='server')
     name = db.Column(db.String(100))
 
 class ItemCommandModel(db.Model):
@@ -95,7 +95,7 @@ class ItemCommandModel(db.Model):
 
     type = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Integer, nullable=False)
-    origin = db.Column(db.String, nullable=False, default='server')
+    origin = db.Column(db.String(10), nullable=False, default='server')
     name = db.Column(db.String(100))
     quantity = db.Column(db.String(100))
     shop = db.Column(db.String(100))
