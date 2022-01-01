@@ -234,7 +234,7 @@ def get_token():
 def authenticate_via_token(token: str) -> Optional[User]:
     user_id = User.decode_auth_token(token.strip().encode())
     if not user_id:
-        return "Invalid token"
+        return None
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         return None
