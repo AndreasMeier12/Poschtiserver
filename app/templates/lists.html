@@ -18,7 +18,7 @@
     <tr id ="shopping-list-{{ list.id }}">
         <td><a href="{{ url_for('single_list', list_id=list.id) }}">{{ list.name }}</a></td>
     <td>
-        <button type="button" class="btn btn-btn-success" id="delete-{{ list.id }}" data-id="{{ list.id }}">🗑</button>
+        <button type="button" class="btn btn-danger" id="delete-{{ list.id }}" data-id="{{ list.id }}">🗑</button>
     </td>
 
     </tr>
