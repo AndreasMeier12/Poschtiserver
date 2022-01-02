@@ -66,19 +66,34 @@ function handleDelete(a: string) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload)
-        }).then()
+    }).then(response => {
+            window.location.href = response.url
+        }
+    )
+
     }
 }
-function handleCheck(a: string, done: boolean, name: string, shop: string, quantity: string){
+
+function handleCheck(a: string, done: boolean, name: string, shop: string, quantity: string) {
     console.log(a, done)
-        return function asdf() {
-        const payload = {'id': a, 'origin': ORIGIN, 'done': !done, 'name': name, 'shop': shop, 'quantity': quantity}
+    return function asdf() {
+        const payload = {
+            'id': a,
+            'origin': ORIGIN,
+            'done': !done,
+            'name': name,
+            'shop': shop,
+            'quantity': quantity
+        }
         const response = fetch(window.location.href, {
             method: 'PATCH', headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload)
-        }).then()
+        }).then(response => {
+                window.location.href = response.url
+            }
+        )
     }
 }
 
