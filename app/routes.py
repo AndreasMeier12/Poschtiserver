@@ -127,14 +127,11 @@ def lists():
 @app.route('/list/<list_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 @login_required
 def single_list(list_id):
-    form = AddItemForm()
     user_id = current_user.id
     time = datetime.datetime.now()
 
-
-
-
     if request.method == 'POST':
+        form = AddItemForm()
         item = form.data['item']
         shop = form.data['shop']
         quantity = form.data['quantity']
@@ -143,24 +140,24 @@ def single_list(list_id):
                                    name=item, quantity=quantity, shop=shop)
         db.session.add(command)
         db.session.commit()
-        pass
     if request.method == 'PATCH':
         data = json.loads(request.data)
         command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=data['id'], list_id=list_id, type=CommandType.UPDATE.value, timestamp=time, name=data['name'], shop=data['shop'], quantity=data['quantity'], done=data['done'])
         db.session.add(command)
         db.session.commit()
+
     if request.method == 'DELETE':
         data = json.loads(request.data)
-        command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=data['id'], list_id=list_id, type=CommandType.DELETE.value, timestamp=time)
-        db.session.add(command)
+        for x in data:
+            command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=x, list_id=list_id, type=CommandType.DELETE.value, timestamp=time)
+            db.session.add(command)
         db.session.commit()
+
 
     items_raw = db.session.query(ItemCommandModel).filter(ItemCommandModel.user_id == user_id, ItemCommandModel.list_id == list_id).all()
     items = [model_to_internal_item_command(x) for x in items_raw]
     merged = merge(items)
-
-
-
+    form = AddItemForm()
     return render_template('list.html', form=form, list_id=list_id, items=merged)
 
 

@@ -25,13 +25,42 @@ function setUp() {
 
             checkButton.addEventListener("click", handleCheck(idString, doneness, name, shop, quantity))
         }
+    document.getElementById("button-clear-done").addEventListener("click", clearDone)
 
     }
 }
 
+
+function clearDone() {
+    const rows = Array.prototype.slice.call((<HTMLTableElement>document.getElementById('listtable')).rows);
+    const doneItems: Array<String> = []
+
+    for (const row of rows) {
+        const id = row.id.toString()
+        if (id.includes("shopping-item-")) {
+            if (row.dataset.done == "1") {
+                const idString = id.replace('shopping-item-', '')
+
+                doneItems.push(idString)
+            }
+        }
+
+
+    }
+    const response = fetch(window.location.href, {
+        method: 'DELETE', headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(doneItems)
+    }).then(response => {
+            window.location.href = response.url
+        }
+    )
+}
+
 function handleDelete(a: string) {
     return function asdf() {
-        const payload = {'id': a, 'origin': ORIGIN}
+        const payload = [a]
         const response = fetch(window.location.href, {
             method: 'DELETE', headers: {
                 'Content-Type': 'application/json',
