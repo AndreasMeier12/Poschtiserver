@@ -58,7 +58,10 @@ function handleDelete(a: string) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload)
-        }).then()
+        }).then(response => {
+                window.location.href = response.url
+            }
+        )
     }
 }
 
