@@ -160,7 +160,7 @@ def single_list(list_id):
     items = [model_to_internal_item_command(x) for x in items_raw]
     merged = merge(items)
     form = AddItemForm()
-    return render_template('list.html', form=form, list_id=list_id, items=merged)
+    return render_template('list.html', form=form, list_id=list_id, items=sorted(merged, key=lambda x: x.shop))
 
 
 @app.route('/api/list', methods=['POST'])
