@@ -72,6 +72,8 @@ def login():
 
         if not error:
             login_user(user)
+            if 'stayloggedin' in request.form:
+                session.permanent = True
             return redirect(url_for('lists'))
         else:
             flash('Login information not correct')
