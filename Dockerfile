@@ -5,11 +5,8 @@ FROM python:3.8-alpine3.15
 WORKDIR /python-docker
 
 COPY requirements.txt requirements.txt
-RUN apk add build-base
-RUN apk add py3-gunicorn
-RUN apk add libffi-dev
+RUN apk add build-base py3-gunicorn libffi-dev && pip3 install -r requirements.txt && apk del build-base
 
-RUN pip3 install -r requirements.txt
 
 COPY . .
 
