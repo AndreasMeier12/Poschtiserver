@@ -172,7 +172,7 @@ def get_lists():
     token = d['token']
     user = authenticate_via_token(token)
     if user is None:
-        return "Failed to authenticate"
+        raise ValueError("Not authorized")
     return getData(user)
 
 
@@ -186,7 +186,7 @@ def handle_list_update():
     token = d['token']
     user = authenticate_via_token(token)
     if user is None:
-        return "Failed to authenticate"
+        raise ValueError("Not authorized")
 
     lists = d['lists']
     items = d['items']
