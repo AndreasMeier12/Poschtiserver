@@ -13,3 +13,4 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['your-email@example.com']
+    TOKEN_VALIDITY_DURATION_HOURS = int( os.environ.get('TOKEN_VALIDITY_DURATION') or 2 * 24 )

@@ -48,7 +48,9 @@ def register():
             flash(error)
         else:
             user: User = User(username=username, id=str(uuid()))
+            settings: UserSettings = UserSettings(user)
             user.set_password(password)
+            db.session.add(settings)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for("login"))

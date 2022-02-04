@@ -9,6 +9,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from argon2 import PasswordHasher
 
+import config
 from app import db, login, app
 
 ph = PasswordHasher()
@@ -72,6 +73,15 @@ class User(UserMixin, db.Model):
 class UserSettings(db.Model):
     user_id = db.Column(db.String(40), ForeignKey('user.id'),  nullable=False, primary_key=True)
     token_duration = db.Column(db.Integer, nullable=True)
+
+    def __init__(self, user: User, token_duration: int=None ):
+        self.user_id = user.id
+        if token_duration is None:
+            token_duration = config.Config.TOKEN_VALIDITY_DURATION_HOURS
+        self.token_duration = token_duration
+
+    def set_token_validity(self, token_duration: int):
+        self.token_duration = token_duration
 
 
 @login.user_loader
