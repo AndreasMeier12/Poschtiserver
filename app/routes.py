@@ -238,18 +238,22 @@ def settings():
 def set_token():
     token_validity_form = TokenValidityForm()
     user_id = current_user.id
-    db.Session.query(UserSettings).filter(UserSettings.user_id==user_id)
+    settings: UserSettings = db.session.query(UserSettings).filter(UserSettings.user_id==user_id).first()
+    settings.token_duration = token_validity_form.data['token_validity_field']
+    db.session.add(settings)
+    db.session.commit()
 
 
     return redirect(url_for('settings'))
 
 
-
 @login_required
 @app.route('/api/token', methods=['GET'])
 def get_token():
-   token = current_user.encode_auth_token()
-   return {'val': token.decode('utf-8')}
+    duration = db.session.query(UserSettings).filter(
+        UserSettings.user_id == current_user.id).first()
+    token = current_user.encode_auth_token(duration)
+    return {'val': token.decode('utf-8')}
 
 def authenticate_via_token(token: str) -> Optional[User]:
     user_id = User.decode_auth_token(token.strip().encode())

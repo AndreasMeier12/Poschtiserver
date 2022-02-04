@@ -34,14 +34,14 @@ class User(UserMixin, db.Model):
         return verified
 
     #https://realpython.com/token-based-authentication-with-flask/
-    def encode_auth_token(self):
+    def encode_auth_token(self, validity_in_hours:int):
         """
         Generates the Auth Token
         :return: string
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=TOKEN_TTL_DAYS),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=validity_in_hours),
                 'iat': datetime.datetime.utcnow(),
                 'sub': self.id
             }
