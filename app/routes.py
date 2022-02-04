@@ -12,8 +12,8 @@ from sqlalchemy import delete
 from app import app, db
 from app.business.datatypes import CommandType
 from app.business.merge import merge_lists, merge
-from app.forms import AddListForm, AddItemForm
-from app.models import User, ListCommandModel, ItemCommandModel
+from app.forms import AddListForm, AddItemForm, TokenValidityForm
+from app.models import User, ListCommandModel, ItemCommandModel, UserSettings
 from app.utils import get_uuid_str as uuid, model_to_internal_item_command, \
     get_uuid_str, list_commands_from_json, item_commands_from_json
 from app.utils import model_to_internal_list_command
@@ -222,6 +222,25 @@ def getData(user: User):
 @app.route('/token', methods=['GET'])
 def token():
     return render_template('auth/token.html')
+
+@login_required
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    token_validity_form = TokenValidityForm()
+
+    return render_template('auth/settings.html',
+                           token_validity_form=token_validity_form)
+
+@login_required
+@app.route('/api/token/set', methods=['POST'])
+def set_token():
+    token_validity_form = TokenValidityForm()
+    user_id = current_user.id
+    db.Session.query(UserSettings).filter(UserSettings.user_id==user_id)
+
+
+    return redirect(url_for('settings'))
+
 
 
 @login_required

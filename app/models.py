@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.String(40), primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(255))
+    settings = db.relationship('UserSettings', backref='user' , lazy=True)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -67,6 +68,10 @@ class User(UserMixin, db.Model):
         except jwt.InvalidTokenError:
             logging.log(logging.INFO, "Token invalid")
         return None
+
+class UserSettings(db.Model):
+    user_id = db.Column(db.String(40), ForeignKey('user.id'),  nullable=False, primary_key=True)
+    token_duration = db.Column(db.Integer, nullable=True)
 
 
 @login.user_loader

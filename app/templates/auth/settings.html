@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Settings{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+        <div class="container">
+
+<form action="{{ url_for('set_token') }}" method="post">
+    {{ token_validity_form.token_validity_field.label }}
+    {{ token_validity_form.token_validity_field }}
+          {{ token_validity_form.token_validity_submit }}
+</form>
+
+        </div>
+
+{% endblock %}
