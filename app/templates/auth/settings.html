@@ -10,7 +10,7 @@
 <form action="{{ url_for('set_token') }}" method="post">
     {{ token_validity_form.token_validity_field.label }}
     {{ token_validity_form.token_validity_field }}
-          {{ token_validity_form.token_validity_submit }}
+          {{ token_validity_form.token_validity_submit(class_="btn-default")  }}
 </form>
 
         <hr>
