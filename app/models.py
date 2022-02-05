@@ -34,22 +34,25 @@ class User(UserMixin, db.Model):
         return verified
 
     #https://realpython.com/token-based-authentication-with-flask/
-    def encode_auth_token(self, validity_in_hours:int):
+    def encode_auth_token(self, validity_in_hours:int) -> (bytes, datetime, datetime):
         """
         Generates the Auth Token
         :return: string
         """
+        exp = datetime.datetime.utcnow() + datetime.timedelta(
+            hours=validity_in_hours)
+        iat = datetime.datetime.utcnow()
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=validity_in_hours),
-                'iat': datetime.datetime.utcnow(),
+                'exp': exp,
+                'iat': iat,
                 'sub': self.id
             }
             return jwt.encode(
                 payload,
                 app.config.get('SECRET_KEY'),
                 algorithm='HS256'
-            )
+            ), exp, iat
         except Exception as e:
             return e
 
@@ -73,6 +76,8 @@ class User(UserMixin, db.Model):
 class UserSettings(db.Model):
     user_id = db.Column(db.String(40), ForeignKey('user.id'),  nullable=False, primary_key=True)
     token_duration = db.Column(db.Integer, nullable=True)
+    last_issued_token = db.Column(db.DateTime, nullable=True, default=None)
+    last_issued_expiration = db.Column(db.DateTime, nullable=True, default=None)
 
     def __init__(self, user: User, token_duration: int=None ):
         self.user_id = user.id

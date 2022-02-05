@@ -250,9 +250,15 @@ def set_token():
 @login_required
 @app.route('/api/token', methods=['GET'])
 def get_token():
-    duration = db.session.query(UserSettings).filter(
+    settings: UserSettings = db.session.query(UserSettings).filter(
         UserSettings.user_id == current_user.id).first()
-    token = current_user.encode_auth_token(duration)
+
+    token, exp, iat = current_user.encode_auth_token(settings.token_duration)
+    settings.last_issued_token  = iat
+    settings.last_issued_expiration  = exp
+    db.session.add(settings)
+    db.session.commit()
+
     return {'val': token.decode('utf-8')}
 
 def authenticate_via_token(token: str) -> Optional[User]:
