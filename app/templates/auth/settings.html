@@ -13,6 +13,9 @@
           {{ token_validity_form.token_validity_submit }}
 </form>
 
+        <hr>
+        <button class="btn-danger" onclick="window.location.href='{{ url_for('delete_account') }}'">Delete Account</button>
+
         </div>
 
 {% endblock %}

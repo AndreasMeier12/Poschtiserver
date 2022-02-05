@@ -12,10 +12,12 @@ from sqlalchemy import delete
 from app import app, db
 from app.business.datatypes import CommandType
 from app.business.merge import merge_lists, merge
-from app.forms import AddListForm, AddItemForm, TokenValidityForm
+from app.forms import AddListForm, AddItemForm, TokenValidityForm, \
+    DeleteAccountForm
 from app.models import User, ListCommandModel, ItemCommandModel, UserSettings
 from app.utils import get_uuid_str as uuid, model_to_internal_item_command, \
-    get_uuid_str, list_commands_from_json, item_commands_from_json
+    get_uuid_str, list_commands_from_json, item_commands_from_json, \
+    get_num_for_delete_phrase, get_delete_phrase, make_ordinal
 from app.utils import model_to_internal_list_command
 
 
@@ -270,3 +272,25 @@ def authenticate_via_token(token: str) -> Optional[User]:
     if user is None:
         return None
     return user
+
+@login_required
+@app.route('/delete-account', methods=['GET', 'POST'])
+def delete_account():
+    settings: UserSettings = db.session.query(UserSettings).filter(
+        UserSettings.user_id == current_user.id).first()
+    form = DeleteAccountForm()
+    if request.method == 'POST':
+        confirmation_phrase = form.data['confirmation']
+        if confirmation_phrase == settings.delete_confirmation:
+            db.session.delete(current_user)
+            db.session.delete(settings)
+
+            db.session.commit()
+            session.clear()
+            return redirect('/')
+    phrase = 'The flames will rise'
+    num = get_num_for_delete_phrase(phrase)
+    settings.delete_confirmation = get_delete_phrase(phrase, num)
+    db.session.add(settings)
+    db.session.commit()
+    return render_template('auth/delete_account.html', num=make_ordinal(num), phrase=phrase, form=form)

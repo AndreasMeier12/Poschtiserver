@@ -78,6 +78,7 @@ class UserSettings(db.Model):
     token_duration = db.Column(db.Integer, nullable=True)
     last_issued_token = db.Column(db.DateTime, nullable=True, default=None)
     last_issued_expiration = db.Column(db.DateTime, nullable=True, default=None)
+    delete_confirmation = db.Column(db.String, nullable=True, default=None)
 
     def __init__(self, user: User, token_duration: int=None ):
         self.user_id = user.id

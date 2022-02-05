@@ -39,3 +39,28 @@ def list_commands_from_json(a: str, user: User):
     dict = json.loads(a)
     list = ShoppingList(dict['listKey'], dict['name'])
     return ListCommandModel(command_id=dict["commandKey"], name=dict['name'], list_id=dict['listKey'], origin='client', user_id=user.id, type=CommandType.get_by_name(dict['type']), timestamp=datetime.datetime.fromtimestamp(dict['timestamp']/1e3))
+
+def make_ordinal(n): # Florian Brucker https://stackoverflow.com/questions/9647202/ordinal-numbers-replacement
+    '''
+    Convert an integer into its ordinal representation::
+
+        make_ordinal(0)   => '0th'
+        make_ordinal(3)   => '3rd'
+        make_ordinal(122) => '122nd'
+        make_ordinal(213) => '213th'
+    '''
+    n = int(n)
+    if 11 <= (n % 100) <= 13:
+        suffix = 'th'
+    else:
+        suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+    return str(n) + suffix
+
+def get_num_for_delete_phrase(a: str) -> int:
+    if len(a) < 20:
+        return 2
+    return len(a) // 10
+
+def get_delete_phrase(a: str, num: int) -> str:
+    b = ''.join([x for x in a if x.isalnum()])
+    return b[::num]

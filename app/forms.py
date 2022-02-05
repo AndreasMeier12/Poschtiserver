@@ -22,3 +22,7 @@ class AddItemForm(FlaskForm):
     shop = StringField('Shop')
 
     submit = SubmitField(label='Add!')
+
+class DeleteAccountForm(FlaskForm):
+    confirmation = StringField('Confirmation phrase', validators=[DataRequired()])
+    submit = SubmitField(label='☢')
