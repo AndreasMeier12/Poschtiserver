@@ -223,7 +223,8 @@ def getData(user: User):
 @login_required
 @app.route('/token', methods=['GET'])
 def token():
-    return render_template('auth/token.html')
+    settings: UserSettings = db.session.query(UserSettings).filter(UserSettings.user_id==current_user.id).first()
+    return render_template('auth/token.html', settings=settings)
 
 @login_required
 @app.route('/settings', methods=['GET', 'POST'])
@@ -259,7 +260,7 @@ def get_token():
     db.session.add(settings)
     db.session.commit()
 
-    return {'val': token.decode('utf-8')}
+    return {'val': token.decode('utf-8'), 'iat': iat, 'exp': exp}
 
 def authenticate_via_token(token: str) -> Optional[User]:
     user_id = User.decode_auth_token(token.strip().encode())

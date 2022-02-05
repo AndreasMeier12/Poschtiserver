@@ -6,8 +6,16 @@
   <h1>{% block title %}Tokens {% endblock %}</h1>
 {% endblock %}
 
+
+
 {% block content %}
         <div class="container">
+        <p>
+            Your tokens are valid for {{ settings.token_duration }} h. <a href="{{ url_for('settings') }}">Change</a>
+        </p>
+            <p>
+                Your last token was issued at <span id="token-iat">{{ settings.last_issued_token }}</span> and expires at <span id="token-exp">{{ settings.last_issued_expiration }}</span>.
+        </p>
         <code id="token-paragraph"></code>
         <button onclick="getToken()">Get token</button>
         </div>
