@@ -8,6 +8,7 @@ from flask import (
 )
 from flask_login import login_required, current_user, login_user
 from sqlalchemy import delete
+from wtforms import csrf
 
 from app import app, db
 from app.business.datatypes import CommandType

@@ -1,4 +1,6 @@
 const ORIGIN = 'server'
+const csrf_token = <HTMLInputElement>(document.getElementById("csrf_token"));
+
 
 function setUp() {
     const rows = Array.prototype.slice.call((<HTMLTableElement>document.getElementById('listtable')).rows);
@@ -50,6 +52,7 @@ function clearDone() {
     const response = fetch(window.location.href, {
         method: 'DELETE', headers: {
             'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token.value,
         },
         body: JSON.stringify(doneItems)
     }).then(response => {
@@ -64,6 +67,8 @@ function handleDelete(a: string) {
         const response = fetch(window.location.href, {
             method: 'DELETE', headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token.value,
+
             },
             body: JSON.stringify(payload)
     }).then(response => {
@@ -88,6 +93,8 @@ function handleCheck(a: string, done: boolean, name: string, shop: string, quant
         const response = fetch(window.location.href, {
             method: 'PATCH', headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token.value,
+
             },
             body: JSON.stringify(payload)
         }).then(response => {

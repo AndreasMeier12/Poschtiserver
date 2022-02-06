@@ -59,6 +59,7 @@
     <p>
     <form action="{{ url_for('single_list', list_id=list_id) }}" method="post">
         <fieldset class="form-field">
+            {{ form.csrf_token }}
             {{ form.item.label }}
             {{ form.item(size=20) }}
             {{ form.quantity.label }}

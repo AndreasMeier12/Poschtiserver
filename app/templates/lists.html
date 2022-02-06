@@ -29,6 +29,7 @@
     <p>
     <form action="{{ url_for('lists') }}" method="post">
               <fieldset class="form-field">
+                      {{ form.csrf_token }}
               {{ form.list_name.label }}
               {{ form.list_name(size=20) }}
           </fieldset>

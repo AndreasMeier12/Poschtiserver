@@ -1,6 +1,7 @@
 let model: ShoppingList[] = []
 
 const ORIGIN = 'server';
+const csrf_token = <HTMLInputElement>(document.getElementById("csrf_token"));
 
 
 
@@ -56,6 +57,7 @@ function handleDelete(a: string) {
         const response = fetch(window.location.href, {
             method: 'DELETE', headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token.value,
             },
             body: JSON.stringify(payload)
         }).then(response => {
