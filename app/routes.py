@@ -4,7 +4,7 @@ import re
 from typing import Optional
 
 from flask import (
-    flash, g, redirect, render_template, request, session, url_for
+    flash, g, redirect, render_template, request, session, url_for, abort
 )
 from flask_login import login_required, current_user, login_user
 from sqlalchemy import delete
@@ -178,7 +178,7 @@ def get_lists():
     token = d['token']
     user = authenticate_via_token(token)
     if user is None:
-        raise ValueError("Not authorized")
+        abort(401)
     return getData(user)
 
 
@@ -192,7 +192,7 @@ def handle_list_update():
     token = d['token']
     user = authenticate_via_token(token)
     if user is None:
-        raise ValueError("Not authorized")
+        abort(401)
 
     lists = d['lists']
     items = d['items']
