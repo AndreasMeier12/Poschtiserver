@@ -8,9 +8,9 @@ from flask import (
 )
 from flask_login import login_required, current_user, login_user
 from sqlalchemy import delete
-from wtforms import csrf
 
 from app import app, db
+from app import csrf
 from app.business.datatypes import CommandType
 from app.business.merge import merge_lists, merge
 from app.forms import AddListForm, AddItemForm, TokenValidityForm, \
@@ -169,6 +169,7 @@ def single_list(list_id):
 
 
 @app.route('/api/list', methods=['POST'])
+@csrf.exempt
 def get_lists():
     a = (request.form.items())
     b = [x for x in a]
@@ -181,7 +182,7 @@ def get_lists():
     return getData(user)
 
 
-
+@csrf.exempt
 @app.route('/api/list', methods=['PUT', 'PATCH'])
 def handle_list_update():
     a = (request.form.items())
