@@ -29,13 +29,13 @@ def handle(command: Command, res):
 
 def handle_create( a: Command, res: dict):
 
-    asdf = copy.copy(a.get_item())
-    res[asdf.id] = asdf
+    b = copy.copy(a.get_item())
+    res[b.id] = b
 
 
 def handle_update(a: Command, res: dict):
-    asdf: ShoppingItem = copy.copy(a.get_item())
-    res[asdf.id] = asdf
+    b: ShoppingItem = copy.copy(a.get_item())
+    res[b.id] = b
 
 
 def handle_delete(a: Command, res):
@@ -44,8 +44,8 @@ def handle_delete(a: Command, res):
 
 def merge_lists(lists: List[ListCommand]):
     res: OrderedDict[int, ShoppingList] = OrderedDict()
-    asdf = sorted(lists, key=lambda x: x.timestamp)
-    for a in asdf:
+    sorted_lists = sorted(lists, key=lambda x: x.timestamp)
+    for a in sorted_lists:
         handle_list_command(a, res)
     return [x for x in res.values()]
 
