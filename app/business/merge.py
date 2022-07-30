@@ -1,17 +1,14 @@
 import copy
-from typing import Dict, List
 from collections import OrderedDict
+from typing import Dict, List
 
-from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, CommandType
+from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, \
+    CommandType
 
 
-def merge(client, server=None):
-    if server is None:
-        server = []
-
-    commands = sorted(client + server)
-    res = OrderedDict()
-    for command in commands:
+def merge(commands: List[Command]) -> List[ShoppingItem]:
+    res: Dict[int, ShoppingItem] = OrderedDict()
+    for command in sorted(commands):
         handle(command, res)
     return [x for x in res.values()]
 
