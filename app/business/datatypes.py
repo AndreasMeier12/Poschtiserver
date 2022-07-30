@@ -67,6 +67,9 @@ class Command:
     def get_timestamp(self):
         return self.timestamp
 
+    def __eq__(self, other):
+        return self.type == other.type and self.item.id == other.item.id
+
 
 
 @dataclass()

@@ -1,43 +1,25 @@
 import copy
 from collections import OrderedDict
-from typing import Dict, List
+from itertools import groupby
+from typing import Dict, List, Optional
 
 from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, \
     CommandType
 
 
 def merge(commands: List[Command]) -> List[ShoppingItem]:
-    res: Dict[int, ShoppingItem] = OrderedDict()
-    for command in sorted(commands):
-        handle(command, res)
-    return [x for x in res.values()]
+    groups = {k: sorted(list(v)) for k, v in groupby(sorted(commands, key=lambda x: x.item.id), key=lambda x: x.item.id)}
+    order = {x.item.id for x in sorted([y for y in commands if y.type.value == CommandType.CREATE.value])}
+    return [res for x in order if (res:=handle_items(groups[x]))]
+
+def handle_items(commands: List[Command]) -> Optional[ShoppingItem]:
+    if any(x.type.value  == CommandType.DELETE.value for x in commands):
+        return None
+    return commands[-1].item
 
 
 
 
-def handle(command: Command, res):
-    if command.type is CommandType.UPDATE:
-        handle_update(command, res)
-    if command.type is CommandType.CREATE:
-        handle_create(command, res)
-    if command.type is CommandType.DELETE:
-        handle_delete(command, res)
-
-
-def handle_create( a: Command, res: dict):
-
-    b = copy.copy(a.get_item())
-    res[b.id] = b
-
-
-def handle_update(a: Command, res: dict):
-    b: ShoppingItem = copy.copy(a.get_item())
-    res[b.id] = b
-
-
-def handle_delete(a: Command, res):
-    if a.item.id in res:
-        del res[a.get_id()]
 
 def merge_lists(lists: List[ListCommand]):
     res: OrderedDict[int, ShoppingList] = OrderedDict()
