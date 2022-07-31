@@ -2,7 +2,8 @@ import unittest
 from datetime import datetime, timedelta
 from app.utils import get_uuid_str
 from app.business import merge
-from app.business.datatypes import ShoppingItem, Command, CommandType
+from app.business.datatypes import ShoppingItem, Command, CommandType, \
+    UpdateFieldType
 
 
 class TestMerging(unittest.TestCase):
@@ -62,7 +63,7 @@ class TestMerging(unittest.TestCase):
     def test_update(self):
         commands = self.create_three_item_merge()
         item_a = ShoppingItem("d", "", "", commands[0].item.id, 1)
-        update_command = Command(item_a, datetime.now(), 'server', CommandType.UPDATE)
+        update_command = Command(item_a, datetime.now(), 'server', CommandType.UPDATE, [UpdateFieldType.NAME.value])
         commands.append(update_command)
         res = merge.merge(commands)
         self.assertEqual(len(res), 3)
@@ -73,7 +74,7 @@ class TestMerging(unittest.TestCase):
     def test_update_client(self):
         commands = self.create_three_item_merge()
         item_a = ShoppingItem("d", "", "", commands[2].item.id, 1)
-        update_command = Command(item_a, datetime.now(), 'client', CommandType.UPDATE)
+        update_command = Command(item_a, datetime.now(), 'client', CommandType.UPDATE, [UpdateFieldType.NAME.value])
         commands.append(update_command)
         res = merge.merge(commands)
         self.assertEqual(len(res), 3)

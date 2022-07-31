@@ -107,6 +107,23 @@ class ListCommandModel(db.Model):
     timestamp = db.Column(db.Integer, nullable=False)
     origin = db.Column(db.String(10), nullable=False, default='server')
     name = db.Column(db.String(100))
+    fields = db.relationship('UpdateField')
+
+
+class UpdateField(db.Model):
+
+
+    command_id = db.Column(db.String(40), ForeignKey("list_command_model.command_id"), primary_key=True)
+    uuid = db.Column(db.String(40), primary_key=True)
+    field = db.Column(db.String(20), nullable=False)
+
+    def __init__(self, command_id:str, field:str, uuid:str):
+        self.command_id = command_id
+        self.field = field
+        self.uuid = uuid
+
+
+
 
 class ItemCommandModel(db.Model):
     command_id = db.Column(db.String(40), primary_key=True)

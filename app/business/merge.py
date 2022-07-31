@@ -4,18 +4,36 @@ from itertools import groupby
 from typing import Dict, List, Optional
 
 from .datatypes import ShoppingItem, Command, ListCommand, ShoppingList, \
-    CommandType
+    CommandType, UpdateFieldType
 
 
 def merge(commands: List[Command]) -> List[ShoppingItem]:
     groups = {k: sorted(list(v)) for k, v in groupby(sorted(commands, key=lambda x: x.item.id), key=lambda x: x.item.id)}
-    order = {x.item.id for x in sorted([y for y in commands if y.type.value == CommandType.CREATE.value])}
+    order = [x.item.id for x in sorted([y for y in commands if y.type.value == CommandType.CREATE.value])]
     return [res for x in order if (res:=handle_items(groups[x]))]
 
 def handle_items(commands: List[Command]) -> Optional[ShoppingItem]:
     if any(x.type.value  == CommandType.DELETE.value for x in commands):
         return None
-    return commands[-1].item
+    ## find last command with field
+    if len(commands) ==1:
+        return commands[0].item
+    strat = commands[0].item
+    name: str = get_newest_update(commands, UpdateFieldType.NAME.value)
+    shop: str = get_newest_update(commands, UpdateFieldType.SHOP.value)
+    done: bool = get_newest_update(commands, UpdateFieldType.DONE.value)
+    quantity: str = get_newest_update(commands, UpdateFieldType.QUANTITY.value)
+    return ShoppingItem(name, quantity, shop, strat.id, strat.list_id, done)
+
+def get_newest_update(commands: List[Command], field: str):
+    updates = sorted(filter( lambda x: x.type==CommandType.UPDATE and field in x.fields, commands))
+    if not updates:
+        return vars(commands[0].item)[field]
+    return vars(updates[-1].item)[field]
+
+
+    return ShoppingItem()
+
 
 
 
