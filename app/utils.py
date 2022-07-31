@@ -6,8 +6,8 @@ from uuid import uuid4
 
 from app.business import datatypes
 from app.business.datatypes import ListCommand, ShoppingList, ShoppingItem, \
-    Command, CommandType
-from app.models import ListCommandModel, ItemCommandModel, User
+    Command, CommandType, UpdateFieldType
+from app.models import ListCommandModel, ItemCommandModel, User, UpdateField
 
 
 def get_next_list_command_id(a: Row) -> int:
@@ -23,7 +23,7 @@ def model_to_internal_list_command(a: ListCommandModel) -> ListCommand:
 def model_to_internal_item_command(a: ItemCommandModel) -> Command:
     doneness = True if a.done else False
     payload = ShoppingItem(a.name, a.quantity, a.shop, a.item_id, a.list_id, done=doneness)
-    return Command(payload, a.timestamp, a.origin, datatypes.CommandType.get_by_id(a.type))
+    return Command(payload, a.timestamp, a.origin, datatypes.CommandType.get_by_id(a.type), fields=[x.field for x in a.fields])
 
 
 def get_uuid_str() -> str:

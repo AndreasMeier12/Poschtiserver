@@ -13,6 +13,7 @@
             <th class="tg-0pky">shop</th>
             <th class="tg-0pky"><br></th>
             <th class="tg-0pky"></th>
+            <th class="tg-0pky"></th>
         </tr>
         </thead>
         <tbody id="listbody">
@@ -44,6 +45,10 @@
 
                 <td>
                     <button type="button" class="btn btn-success" id="check-{{ item.id }}" data-id="{{ item.id }}">✅</button>
+                </td>
+
+                <td>
+                    <a id="edit-{{ item.id }}" href="{{ url_for('edit_item', list_id=list_id, item_id=item.id) }}" data-id="{{ item.id }}">✏️</a>
                 </td>
 
                 <td>

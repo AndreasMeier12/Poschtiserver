@@ -11,11 +11,12 @@ from sqlalchemy import delete
 
 from app import app, db
 from app import csrf
-from app.business.datatypes import CommandType
+from app.business.datatypes import CommandType, UpdateFieldType
 from app.business.merge import merge_lists, merge
 from app.forms import AddListForm, AddItemForm, TokenValidityForm, \
-    DeleteAccountForm
-from app.models import User, ListCommandModel, ItemCommandModel, UserSettings
+    DeleteAccountForm, EditItemForm
+from app.models import User, ListCommandModel, ItemCommandModel, UserSettings, \
+    UpdateField
 from app.utils import get_uuid_str as uuid, model_to_internal_item_command, \
     get_uuid_str, list_commands_from_json, item_commands_from_json, \
     get_num_for_delete_phrase, get_delete_phrase, make_ordinal
@@ -125,10 +126,48 @@ def lists():
         db.session.add(command)
         db.session.commit()
 
+
+
+
     lists_raw = db.session.query(ListCommandModel).filter(ListCommandModel.user_id == user_id).all()
     lists = [model_to_internal_list_command(x) for x in lists_raw]
     merged = merge_lists(lists)
     return render_template('lists.html', form=form, lists=merged)
+
+@app.route('/edit/<list_id>/<item_id>', methods=['GET', 'POST'])
+@login_required
+def edit_item(list_id, item_id):
+    user_id = current_user.id
+    time = datetime.datetime.now()
+    form = EditItemForm()
+
+    if request.method == 'POST':
+        item = form.data['item']
+        shop = form.data['shop']
+        quantity = form.data['quantity']
+        edited_fields = []
+        if item != form.data['item_old']:
+            edited_fields.append('name')
+        if item != form.data['quantity_old']:
+            edited_fields.append('quantity')
+        if shop != form.data['shop_old']:
+            edited_fields.append('shop')
+
+        command = ItemCommandModel(command_id=uuid(), user_id=user_id,
+                                   item_id=item_id, list_id=list_id,
+                                   type=CommandType.UPDATE.value,
+                                   timestamp=time,
+                                   name=item, quantity=quantity, shop=shop)
+        update_fields = [UpdateField(command.command_id, x, get_uuid_str()) for x in edited_fields]
+
+        db.session.add(command)
+        db.session.add_all(update_fields)
+        db.session.commit()
+        return redirect(url_for('single_list', list_id=list_id))
+    models = db.session.query(ItemCommandModel).filter(ItemCommandModel.list_id == list_id, ItemCommandModel.item_id == item_id).all()
+    commands = [model_to_internal_item_command(x) for x in models]
+    item = merge(commands)[0]
+    return render_template('edit-item.html',item=item, form=form, list_id=list_id, item_id=item_id)
 
 
 @app.route('/list/<list_id>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
@@ -150,7 +189,9 @@ def single_list(list_id):
     if request.method == 'PATCH':
         data = json.loads(request.data)
         command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=data['id'], list_id=list_id, type=CommandType.UPDATE.value, timestamp=time, name=data['name'], shop=data['shop'], quantity=data['quantity'], done=data['done'])
+        field = UpdateField(command.command_id, UpdateFieldType.DONE.value, get_uuid_str())
         db.session.add(command)
+        db.session.add(field)
         db.session.commit()
 
     if request.method == 'DELETE':
@@ -159,6 +200,9 @@ def single_list(list_id):
             command = ItemCommandModel(command_id=get_uuid_str(), user_id = user_id, item_id=x, list_id=list_id, type=CommandType.DELETE.value, timestamp=time)
             db.session.add(command)
         db.session.commit()
+        return
+
+
 
 
     items_raw = db.session.query(ItemCommandModel).filter(ItemCommandModel.user_id == user_id, ItemCommandModel.list_id == list_id).all()
@@ -197,6 +241,8 @@ def handle_list_update():
     lists = d['lists']
     items = d['items']
     item_commands = [item_commands_from_json(x, user) for x in items]
+    for x in filter(lambda x: x.type==CommandType.UPDATE , item_commands):
+        x.fields = [UpdateField(x.command_id, UpdateFieldType.DONE.value, get_uuid_str())]
     list_commands = [list_commands_from_json(x, user) for x in lists]
     if request.method == 'POST':
         statement = delete(ListCommandModel).where(ListCommandModel.user_id == user.id)

@@ -88,7 +88,8 @@ function handleCheck(a: string, done: boolean, name: string, shop: string, quant
             'done': !done,
             'name': name,
             'shop': shop,
-            'quantity': quantity
+            'quantity': quantity,
+            'affected': ['done'],
         }
         const response = fetch(window.location.href, {
             method: 'PATCH', headers: {

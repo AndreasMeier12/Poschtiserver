@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from abc import ABC
 from datetime import datetime
+from typing import List, Dict
+
 
 @dataclass
 class CommandType(Enum):
@@ -24,6 +26,11 @@ class CommandType(Enum):
             if a == i.value:
                 return i
 
+class UpdateFieldType(Enum):
+    DONE = 'done'
+    NAME = 'name'
+    QUANTITY = 'quantity'
+    SHOP = 'shop'
 
 @dataclass
 class Log:
@@ -39,11 +46,12 @@ class ShoppingItem:
     done: bool = False
 
 class Command:
-    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str, type: CommandType):
+    def __init__(self, item: ShoppingItem, timestamp: datetime, origin: str, type: CommandType, fields: List[str]=None):
         self.item: ShoppingItem = item
         self.timestamp: datetime = timestamp
         self.origin = origin
         self.type = type
+        self.fields = [] if not fields else fields
 
 
     def get_timestamp(self):
@@ -66,6 +74,7 @@ class Command:
 
     def get_timestamp(self):
         return self.timestamp
+
 
     def __eq__(self, other):
         return self.type == other.type and self.item.id == other.item.id
