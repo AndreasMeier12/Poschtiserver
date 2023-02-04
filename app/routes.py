@@ -171,10 +171,7 @@ def single_list(list_id):
 @app.route('/api/list', methods=['POST'])
 @csrf.exempt
 def get_lists():
-    a = (request.form.items())
-    b = [x for x in a]
-    c = b[0][0]
-    d = json.loads(c)
+    d = json.loads(request.data)
     token = d['token']
     user = authenticate_via_token(token)
     if user is None:
@@ -185,10 +182,8 @@ def get_lists():
 @csrf.exempt
 @app.route('/api/list', methods=['PUT', 'PATCH'])
 def handle_list_update():
-    a = (request.form.items())
-    b = [x for x in a]
-    c = b[0][0]
-    d = json.loads(c)
+
+    d = json.loads(request.data)
     token = d['token']
     user = authenticate_via_token(token)
     if user is None:
