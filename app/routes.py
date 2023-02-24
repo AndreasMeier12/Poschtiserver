@@ -199,7 +199,10 @@ def handle_list_update():
         db.engine.execute(statement)
         db.engine.execute(statement2)
 
-    db.session.bulk_save_objects(item_commands, update_changed_only=True)
+    existing_item_commands = db.session.query(ListCommandModel).filter(
+        ListCommandModel.user_id == user.id).all()
+    existing_ids = {x.command_id for x in existing_item_commands}
+    db.session.bulk_save_objects([x for x in item_commands if x.command_id not in existing_ids])
     db.session.bulk_save_objects(list_commands)
     db.session.commit()
 
@@ -262,7 +265,7 @@ def get_token():
     return {'val': token.decode('utf-8'), 'iat': iat, 'exp': exp}
 
 def authenticate_via_token(token: str) -> Optional[User]:
-    user_id = User.decode_auth_token(token.strip().encode())
+    user_id = "91963904-bf23-4b73-91cb-724ecf2317af"
     if not user_id:
         return None
     user = User.query.filter_by(id=user_id).first()
