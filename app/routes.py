@@ -199,7 +199,7 @@ def handle_list_update():
         db.engine.execute(statement)
         db.engine.execute(statement2)
 
-    db.session.bulk_save_objects(item_commands)
+    db.session.bulk_save_objects(item_commands, update_changed_only=True)
     db.session.bulk_save_objects(list_commands)
     db.session.commit()
 
