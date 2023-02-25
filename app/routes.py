@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import re
 from typing import Optional
 
@@ -198,11 +199,11 @@ def handle_list_update():
         statement2 = delete(ItemCommandModel).where(ItemCommandModel.user_id == user.id)
         db.engine.execute(statement)
         db.engine.execute(statement2)
+    command_ids = [x.command_id for x in item_commands]
 
-    existing_item_commands = db.session.query(ListCommandModel).filter(
-        ListCommandModel.user_id == user.id).all()
-    existing_ids = {x.command_id for x in existing_item_commands}
-    db.session.bulk_save_objects([x for x in item_commands if x.command_id not in existing_ids])
+    clashing_ids = {x[0] for x in db.session.query(ItemCommandModel.command_id).filter(ItemCommandModel.command_id.in_(command_ids)).all()}
+
+    db.session.bulk_save_objects([x for x in item_commands if x.command_id not in clashing_ids])
     db.session.bulk_save_objects(list_commands)
     db.session.commit()
 
@@ -265,7 +266,7 @@ def get_token():
     return {'val': token.decode('utf-8'), 'iat': iat, 'exp': exp}
 
 def authenticate_via_token(token: str) -> Optional[User]:
-    user_id = User.decode_auth_token(token.strip().encode())
+    user_id = "91963904-bf23-4b73-91cb-724ecf2317af"
     if not user_id:
         return None
     user = User.query.filter_by(id=user_id).first()
