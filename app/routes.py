@@ -266,7 +266,7 @@ def get_token():
     return {'val': token.decode('utf-8'), 'iat': iat, 'exp': exp}
 
 def authenticate_via_token(token: str) -> Optional[User]:
-    user_id = "91963904-bf23-4b73-91cb-724ecf2317af"
+    user_id = User.decode_auth_token(token.strip().encode())
     if not user_id:
         return None
     user = User.query.filter_by(id=user_id).first()
